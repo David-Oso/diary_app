@@ -9,6 +9,7 @@ import com.diary.DiaryApp.data.model.User;
 
 public interface UserService {
     RegisterUserResponse registerUser(RegisterUserRequest registerUserRequest);
+//    void resendOtpToRegisteredEmail(String email);
     OtpVerificationResponse verifyUser(String otp);
     UserLoginResponse login(UserLoginRequest loginRequest);
     User getUserByUserName(String userName);
