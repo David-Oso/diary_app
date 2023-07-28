@@ -18,7 +18,7 @@ public class OtpEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     private User user;
     @Column(unique = true)
     private String otp;

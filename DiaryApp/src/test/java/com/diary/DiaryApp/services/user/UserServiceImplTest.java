@@ -1,6 +1,7 @@
 package com.diary.DiaryApp.services.user;
 
 import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
+import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
 import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,5 +27,14 @@ class UserServiceImplTest {
         RegisterUserResponse registerResponse = userService.registerUser(registerUserRequest);
         assertThat(registerResponse.getMessage()).isEqualTo("Check your mail for otp to activate your diary");
         assertThat(registerResponse.isEnabled()).isEqualTo(false);
+    }
+
+    @Test
+    void verifyUserTest(){
+        OtpVerificationResponse verificationResponse = userService.verifyUser("996985");
+        assertThat(verificationResponse.getUserName()).isEqualTo(registerUserRequest.getUserName());
+        assertThat(verificationResponse.getEmail()).isEqualTo(registerUserRequest.getEmail());
+        assertThat(verificationResponse.isEnabled()).isEqualTo(true);
+//        assertThat(verificationResponse.getJwtTokenResponse()).isNotNull();
     }
 }
