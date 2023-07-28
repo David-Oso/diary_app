@@ -54,6 +54,12 @@ class UserServiceImplTest {
     }
 
     @Test
+    void getUserByIdTest(){
+        User user = userService.getUserById(1L);
+        assertThat(user.getUserName()).isEqualTo(registerUserRequest.getUserName());
+        assertThat(user.getEmail()).isEqualTo(registerUserRequest.getEmail());
+    }
+    @Test
     void getUserByUserNameTest(){
         User user = userService.getUserByUserName("Dave");
         assertThat(user.getEmail()).isEqualTo(registerUserRequest.getEmail());

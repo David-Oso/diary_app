@@ -1,9 +1,11 @@
 package com.diary.DiaryApp.services.user;
 
 import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
+import com.diary.DiaryApp.data.dto.request.UpdateUserRequest;
 import com.diary.DiaryApp.data.dto.request.UserLoginRequest;
 import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
 import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
+import com.diary.DiaryApp.data.dto.response.UpdateUserResponse;
 import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
 import com.diary.DiaryApp.data.model.Diary;
 import com.diary.DiaryApp.data.model.User;
@@ -14,6 +16,7 @@ import com.diary.DiaryApp.exception.NotFoundException;
 import com.diary.DiaryApp.exception.OtpException;
 import com.diary.DiaryApp.otp.OtpEntity;
 import com.diary.DiaryApp.otp.OtpService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -73,13 +76,19 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserLoginResponse login(UserLoginRequest loginRequest) {
-        User user = getUserByUserName(loginRequest.getUserName());
+        User user = this.getUserByUserName(loginRequest.getUserName());
         if(!(user.getPassword().equals(loginRequest.getPassword())))
             throw new InvalidDetailsException("Password is incorrect");
         else return UserLoginResponse.builder()
                 .message("Authentication Successful")
 //                .jwtTokenResponse()
                 .build();
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return this.userRepository.findById(id).orElseThrow(
+                ()-> new NotFoundException("User not found!"));
     }
 
     @Override
@@ -91,6 +100,6 @@ public class UserServiceImpl implements UserService{
     @Override
     public User getUserByEmail(String email) {
         return userRepository.findUserByEmail(email).orElseThrow(
-                ()-> new NotFoundException("User with this email email not found"));
+                () -> new NotFoundException("User with this email email not found"));
     }
 }

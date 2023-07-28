@@ -15,8 +15,9 @@ public interface UserService {
 //    void resendOtpToRegisteredEmail(String email);
     OtpVerificationResponse verifyUser(String otp);
     UserLoginResponse login(UserLoginRequest loginRequest);
+    User getUserById(Long id);
     User getUserByUserName(String userName);
     User getUserByEmail(String email);
 //    String uploadProfileImage(UploadImageRequest uploadImageRequest)
-    UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
+//    UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
 }

@@ -1,5 +1,6 @@
 package com.diary.DiaryApp.data.dto.request;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,5 @@ import lombok.Setter;
 public class UpdateUserRequest {
     private Long userId;
     private String password;
-    private String newUserName;
-    private String newPassword;
+    private JsonPatch updatePayLoad;
 }
