@@ -22,7 +22,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void registerUser() {
+    void registerUserTest() {
         RegisterUserResponse registerResponse = userService.registerUser(registerUserRequest);
         assertThat(registerResponse.getMessage()).isEqualTo("Check your mail for otp to activate your diary");
         assertThat(registerResponse.isEnabled()).isEqualTo(false);
