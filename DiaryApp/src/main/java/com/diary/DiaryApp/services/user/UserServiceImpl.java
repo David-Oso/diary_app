@@ -9,6 +9,7 @@ import com.diary.DiaryApp.data.model.Diary;
 import com.diary.DiaryApp.data.model.User;
 import com.diary.DiaryApp.data.repository.UserRepository;
 import com.diary.DiaryApp.exception.AlreadyExistsException;
+import com.diary.DiaryApp.exception.InvalidDetailsException;
 import com.diary.DiaryApp.exception.NotFoundException;
 import com.diary.DiaryApp.exception.OtpException;
 import com.diary.DiaryApp.otp.OtpEntity;
@@ -61,17 +62,6 @@ public class UserServiceImpl implements UserService{
         return getOtpVerificationResponse(savedUser);
     }
 
-    @Override
-    public UserLoginResponse login(UserLoginRequest loginRequest) {
-        return null;
-    }
-
-    @Override
-    public User getUserByUserName(String userName) {
-        return userRepository.findUserByUserName(userName).orElseThrow(
-                ()-> new NotFoundException("User with this user name not found!"));
-    }
-
     private static OtpVerificationResponse getOtpVerificationResponse(User savedUser) {
         return OtpVerificationResponse.builder()
                 .id(savedUser.getId())
@@ -80,5 +70,22 @@ public class UserServiceImpl implements UserService{
                 .isEnabled(savedUser.isEnabled())
 //                .jwtTokenResponse()
                 .build();
+    }
+
+    @Override
+    public UserLoginResponse login(UserLoginRequest loginRequest) {
+        User user = getUserByUserName(loginRequest.getUserName());
+        if(!(user.getPassword().equals(loginRequest.getPassword())))
+            throw new InvalidDetailsException("Password is incorrect");
+        else return UserLoginResponse.builder()
+                .message("Authentication successful")
+//                .jwtTokenResponse()
+                .build();
+    }
+
+    @Override
+    public User getUserByUserName(String userName) {
+        return userRepository.findUserByUserName(userName).orElseThrow(
+                ()-> new NotFoundException("User with this user name not found!"));
     }
 }
