@@ -40,7 +40,6 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
-
     private void checkIfUserAlreadyExists(String userName, String email) {
         if (userRepository.existsByUserName(userName))
             throw new AlreadyExistsException("user name is taken");
