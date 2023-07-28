@@ -21,6 +21,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest registerRequest) {
         checkIfUserAlreadyExists(registerRequest.getUserName(), registerRequest.getEmail());
+//        User new User =
         return null;
     }
 
