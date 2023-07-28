@@ -1,6 +1,7 @@
 package com.diary.DiaryApp.services.user;
 
 import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
+import com.diary.DiaryApp.data.dto.request.UploadImageRequest;
 import com.diary.DiaryApp.data.dto.request.UserLoginRequest;
 import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
 import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
@@ -14,4 +15,6 @@ public interface UserService {
     UserLoginResponse login(UserLoginRequest loginRequest);
     User getUserByUserName(String userName);
     User getUserByEmail(String email);
+//    String uploadProfileImage(UploadImageRequest uploadImageRequest)
+    UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
 }
