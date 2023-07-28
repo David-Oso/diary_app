@@ -1,7 +1,6 @@
 package com.diary.DiaryApp.otp;
 
 import com.diary.DiaryApp.data.model.User;
-import com.diary.DiaryApp.exception.DiaryAppException;
 import com.diary.DiaryApp.exception.OtpException;
 import com.diary.DiaryApp.utilities.DiaryAppUtils;
 import lombok.AllArgsConstructor;
