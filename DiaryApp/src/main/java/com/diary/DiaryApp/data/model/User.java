@@ -1,4 +1,4 @@
-package com.diary.DiaryApp.model;
+package com.diary.DiaryApp.data.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
