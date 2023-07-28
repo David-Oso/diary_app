@@ -7,4 +7,5 @@ import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
 public interface UserService {
     RegisterUserResponse registerUser(RegisterUserRequest registerUserRequest);
     OtpVerificationResponse verifyUser(String otp);
+    UserLoginResponse login(UserLoginRequest loginRequest);
 }
