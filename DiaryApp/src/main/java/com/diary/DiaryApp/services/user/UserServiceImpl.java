@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService{
         if(!(user.getPassword().equals(loginRequest.getPassword())))
             throw new InvalidDetailsException("Password is incorrect");
         else return UserLoginResponse.builder()
-                .message("Authentication successful")
+                .message("Authentication Successful")
 //                .jwtTokenResponse()
                 .build();
     }

@@ -1,8 +1,10 @@
 package com.diary.DiaryApp.services.user;
 
 import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
+import com.diary.DiaryApp.data.dto.request.UserLoginRequest;
 import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
 import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
+import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
 import com.diary.DiaryApp.data.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class UserServiceImplTest {
     @Autowired UserService userService;
     private RegisterUserRequest registerUserRequest;
+    private UserLoginRequest userLoginRequest;
 
     @BeforeEach
     void setUp() {
@@ -21,6 +24,10 @@ class UserServiceImplTest {
         registerUserRequest.setUserName("Dave");
         registerUserRequest.setEmail("dave@gmail.com");
         registerUserRequest.setPassword("Password");
+
+        userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setUserName("Dave");
+        userLoginRequest.setPassword("Password");
     }
 
     @Test
@@ -37,6 +44,13 @@ class UserServiceImplTest {
         assertThat(verificationResponse.getEmail()).isEqualTo(registerUserRequest.getEmail());
         assertThat(verificationResponse.isEnabled()).isEqualTo(true);
 //        assertThat(verificationResponse.getJwtTokenResponse()).isNotNull();
+    }
+
+    @Test
+    void loginTest(){
+        UserLoginResponse loginResponse = userService.login(userLoginRequest);
+        assertThat(loginResponse.getMessage()).isEqualTo("Authentication Successful");
+//        assertThat(loginResponse.getJwtTokenResponse()).isNotNull();
     }
 
     @Test
