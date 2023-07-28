@@ -20,4 +20,6 @@ public interface UserService {
     User getUserByEmail(String email);
 //    String uploadProfileImage(UploadImageRequest uploadImageRequest)
     UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
+//    String sendResetPasswordMail(String email);
+    ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
 }

@@ -4,6 +4,7 @@ import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
 import com.diary.DiaryApp.data.dto.request.UserLoginRequest;
 import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
 import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
+import com.diary.DiaryApp.data.dto.response.UpdateUserResponse;
 import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
 import com.diary.DiaryApp.data.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,5 +70,10 @@ class UserServiceImplTest {
     void getUserByEmailTest(){
         User user = userService.getUserByEmail("dave@gmail.com");
         assertThat(user.getUserName()).isEqualTo(registerUserRequest.getUserName());
+    }
+
+    @Test
+    void updateUserTest(){
+        UpdateUserResponse updateUserResponse = userService.updateUser();
     }
 }
