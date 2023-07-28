@@ -12,4 +12,5 @@ public interface UserService {
     OtpVerificationResponse verifyUser(String otp);
     UserLoginResponse login(UserLoginRequest loginRequest);
     User getUserByUserName(String userName);
+    User getUserByEmail(String email);
 }
