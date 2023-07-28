@@ -1,6 +1,8 @@
 package com.diary.DiaryApp.otp;
 
 import com.diary.DiaryApp.data.model.User;
+import com.diary.DiaryApp.exception.DiaryAppException;
+import com.diary.DiaryApp.utilities.DiaryAppUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +16,19 @@ public class OtpServiceImpl implements OtpService{
         OtpEntity existingOtpEntity = otpRepository.findOtpEntityByUser(user);
         if(existingOtpEntity != null){
             User foundUser = existingOtpEntity.getUser();
-            if (foundUser.isEnabled())
-                throw new
+            if (foundUser.isEnabled()){
+                otpRepository.delete(existingOtpEntity);
+                throw new DiaryAppException("User is already enabled");
+            }
+            else otpRepository.delete(existingOtpEntity);
         }
-        return null;
+        String generatedOtp = DiaryAppUtils.generateOtp();
+        OtpEntity newOtpEntity = OtpEntity.builder()
+                .user(user)
+                .otp(generatedOtp)
+                .build();
+        otpRepository.save(newOtpEntity);
+        return generatedOtp;
     }
 
     @Override
