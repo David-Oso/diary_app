@@ -16,7 +16,10 @@ import com.diary.DiaryApp.exception.NotFoundException;
 import com.diary.DiaryApp.exception.OtpException;
 import com.diary.DiaryApp.otp.OtpEntity;
 import com.diary.DiaryApp.otp.OtpService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -101,5 +104,31 @@ public class UserServiceImpl implements UserService{
     public User getUserByEmail(String email) {
         return userRepository.findUserByEmail(email).orElseThrow(
                 () -> new NotFoundException("User with this email email not found"));
+    }
+
+    @Override
+    public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        User user = this.getUserById(updateUserRequest.getUserId());
+        if(user.getPassword().equals(updateUserRequest.getPassword()))
+            throw new InvalidDetailsException("Password is incorrect");
+        else {
+            JsonNode node = objectMapper.convertValue(user, JsonNode.class);
+            JsonPatch updatePayload = updateUserRequest.getUpdatePayLoad();
+            try{
+                JsonNode updateNode = updatePayload.apply(node);
+                var updatedUser = objectMapper.convertValue(updateNode, User.class);
+                updatedUser = userRepository.save(updatedUser);
+                return UpdateUserResponse.builder()
+                        .id(updatedUser.getId())
+                        .userName(updatedUser.getUserName())
+                        .email(updatedUser.getEmail())
+                        .isEnabled(updatedUser.isEnabled())
+                        .build();
+            }catch (JsonPatchException exception){
+                log.error(exception.getMessage());
+                throw new RuntimeException();
+            }
+        }
     }
 }

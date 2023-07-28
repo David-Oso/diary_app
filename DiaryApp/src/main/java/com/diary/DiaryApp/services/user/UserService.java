@@ -19,5 +19,5 @@ public interface UserService {
     User getUserByUserName(String userName);
     User getUserByEmail(String email);
 //    String uploadProfileImage(UploadImageRequest uploadImageRequest)
-//    UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
+    UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
 }

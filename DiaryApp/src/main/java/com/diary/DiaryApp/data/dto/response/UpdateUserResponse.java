@@ -6,6 +6,8 @@ import lombok.Getter;
 @Builder
 @Getter
 public class UpdateUserResponse {
-    private String message;
-    private boolean isUpdated;
+    private Long id;
+    private String userName;
+    private String email;
+    private boolean isEnabled;
 }
