@@ -1,12 +1,15 @@
 package com.diary.DiaryApp.services.user;
 
 import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
+import com.diary.DiaryApp.data.dto.request.UserLoginRequest;
 import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
 import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
+import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
 import com.diary.DiaryApp.data.model.Diary;
 import com.diary.DiaryApp.data.model.User;
 import com.diary.DiaryApp.data.repository.UserRepository;
 import com.diary.DiaryApp.exception.AlreadyExistsException;
+import com.diary.DiaryApp.exception.NotFoundException;
 import com.diary.DiaryApp.exception.OtpException;
 import com.diary.DiaryApp.otp.OtpEntity;
 import com.diary.DiaryApp.otp.OtpService;
@@ -56,6 +59,17 @@ public class UserServiceImpl implements UserService{
 
         otpService.deleteOtp(otpEntity);
         return getOtpVerificationResponse(savedUser);
+    }
+
+    @Override
+    public UserLoginResponse login(UserLoginRequest loginRequest) {
+        return null;
+    }
+
+    @Override
+    public User getUserByUserName(String userName) {
+        return userRepository.findUserByUserName(userName).orElseThrow(
+                ()-> new NotFoundException("User with this user name not found!"));
     }
 
     private static OtpVerificationResponse getOtpVerificationResponse(User savedUser) {

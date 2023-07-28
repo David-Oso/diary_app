@@ -3,6 +3,7 @@ package com.diary.DiaryApp.services.user;
 import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
 import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
 import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
+import com.diary.DiaryApp.data.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,11 @@ class UserServiceImplTest {
         assertThat(verificationResponse.getEmail()).isEqualTo(registerUserRequest.getEmail());
         assertThat(verificationResponse.isEnabled()).isEqualTo(true);
 //        assertThat(verificationResponse.getJwtTokenResponse()).isNotNull();
+    }
+
+    @Test
+    void getUserByUserNameTest(){
+        User user = userService.getUserByUserName("Dave");
+        assertThat(user.getEmail()).isEqualTo(registerUserRequest.getEmail());
     }
 }
