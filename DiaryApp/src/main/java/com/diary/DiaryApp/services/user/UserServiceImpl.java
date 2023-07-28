@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService{
         User newUser = modelMapper.map(registerRequest, User.class);
         userRepository.save(newUser);
         String otp = otpService.generateAndSaveOtp(newUser);
-//        log.info("\n\n:::::::::::::::::::: GENERATED OTP -> %s::::::::::::::::::::\n".formatted(otp));
+        log.info("\n\n:::::::::::::::::::: GENERATED OTP -> %s::::::::::::::::::::\n".formatted(otp));
         return RegisterUserResponse.builder()
                 .message("Check your mail for otp to activate your diary")
                 .isEnabled(false)

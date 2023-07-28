@@ -5,4 +5,5 @@ import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
 
 public interface UserService {
     RegisterUserResponse registerUser(RegisterUserRequest registerUserRequest);
+    UserVerificationResponse verifyUser(String token);
 }
