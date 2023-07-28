@@ -9,6 +9,7 @@ import com.diary.DiaryApp.exception.NotFoundException;
 import com.diary.DiaryApp.otp.OtpService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,37 +17,27 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
     private final OtpService otpService;
+
 
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest registerRequest) {
         checkIfUserAlreadyExists(registerRequest.getUserName(), registerRequest.getEmail());
-//        User new User =
-        return null;
+        User newUser = modelMapper.map(registerRequest, User.class);
+        userRepository.save(newUser);
+        String otp = otpService.generateAndSaveOtp(newUser);
+//        log.info("\n\n:::::::::::::::::::: GENERATED OTP -> %s::::::::::::::::::::\n".formatted(otp));
+        return RegisterUserResponse.builder()
+                .message("Check your mail for otp to activate your diary")
+                .isEnabled(false)
+                .build();
     }
 
     private void checkIfUserAlreadyExists(String userName, String email) {
-        User userFoundByUserName = userRepository.findUserByUserName(userName);
-        User userFoundByEmail = userRepository.findUserByEmail(email);
-        if(userFoundByUserName != null)
-            throw new AlreadyExistsException("User with this email already exists");
-        else if (userFoundByEmail != null)
-            throw new AlreadyExistsException("User with this user name already exists");
-    }
-
-    @Override
-    public User getUserByEmail(String email) {
-        User user = userRepository.findUserByEmail(email);
-        if(user == null)
-            throw new NotFoundException("User with this email not found!");
-        else return user;
-    }
-
-    @Override
-    public User getUserByUserName(String userName) {
-        User user = userRepository.findUserByUserName(userName);
-        if(user == null)
-            throw new NotFoundException("User with user name not found!");
-        else return user;
+        if (userRepository.existsByUserName(userName))
+            throw new AlreadyExistsException("user name is taken");
+        else if(userRepository.existsByEmail(email))
+            throw new AlreadyExistsException("email is taken");
     }
 }
