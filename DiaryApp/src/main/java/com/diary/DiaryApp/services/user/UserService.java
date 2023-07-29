@@ -12,7 +12,7 @@ public interface UserService {
     User getUserById(Long id);
     User getUserByUserName(String userName);
     User getUserByEmail(String email);
-//    String uploadProfileImage(UploadImageRequest uploadImageRequest)
+    String uploadProfileImage(UploadImageRequest uploadImageRequest);
     UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
 //    String sendResetPasswordMail(String email);
 //    ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);

@@ -28,6 +28,6 @@ public class User {
     private Diary diary;
     private boolean isEnabled = false;
     private final LocalDateTime createdAt = LocalDateTime.now();
-    private String image_url;
+    private String imageUrl;
 
 }

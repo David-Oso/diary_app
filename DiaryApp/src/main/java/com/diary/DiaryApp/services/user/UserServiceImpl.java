@@ -2,6 +2,7 @@ package com.diary.DiaryApp.services.user;
 
 import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
 import com.diary.DiaryApp.data.dto.request.UpdateUserRequest;
+import com.diary.DiaryApp.data.dto.request.UploadImageRequest;
 import com.diary.DiaryApp.data.dto.request.UserLoginRequest;
 import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
 import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
@@ -16,6 +17,7 @@ import com.diary.DiaryApp.exception.NotFoundException;
 import com.diary.DiaryApp.exception.OtpException;
 import com.diary.DiaryApp.otp.OtpEntity;
 import com.diary.DiaryApp.otp.OtpService;
+import com.diary.DiaryApp.services.cloudinary.CloudinaryService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -32,6 +34,7 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final OtpService otpService;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest registerRequest) {
@@ -104,6 +107,15 @@ public class UserServiceImpl implements UserService{
     public User getUserByEmail(String email) {
         return userRepository.findUserByEmail(email).orElseThrow(
                 () -> new NotFoundException("User with this email email not found"));
+    }
+
+    @Override
+    public String uploadProfileImage(UploadImageRequest uploadImageRequest) {
+        User user = getUserById(uploadImageRequest.getId());
+        String imageUrl = cloudinaryService.upload(uploadImageRequest.getProfileImage());
+        user.setImageUrl(imageUrl);
+        userRepository.save(user);
+        return "Profile Image Uploaded";
     }
 
     @Override
