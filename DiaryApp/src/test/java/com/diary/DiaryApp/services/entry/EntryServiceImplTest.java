@@ -1,7 +1,9 @@
 package com.diary.DiaryApp.services.entry;
 
 import com.diary.DiaryApp.data.dto.request.CreateEntryRequest;
+import com.diary.DiaryApp.data.dto.request.UpdateEntryRequest;
 import com.diary.DiaryApp.data.dto.response.CreateEntryResponse;
+import com.diary.DiaryApp.data.dto.response.UpdateEntryResponse;
 import com.diary.DiaryApp.data.model.Entry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ class EntryServiceImplTest {
     @Autowired EntryService entryService;
     private CreateEntryRequest createEntryRequest1;
     private CreateEntryRequest createEntryRequest2;
+    private UpdateEntryRequest updateEntryRequest;
 
     @BeforeEach
     void setUp() {
@@ -26,6 +29,12 @@ class EntryServiceImplTest {
         createEntryRequest2.setUserId(1L);
         createEntryRequest2.setTitle("My second diary entry");
         createEntryRequest2.setBody("This is my second entry in my_diary app");
+
+        updateEntryRequest = new UpdateEntryRequest();
+        updateEntryRequest.setUserId(1L);
+        updateEntryRequest.setEntryId(2L);
+        updateEntryRequest.setTitle("Updating the second entry");
+        updateEntryRequest.setBody("I am currently updating the second entry");
     }
 
     @Test
@@ -49,5 +58,11 @@ class EntryServiceImplTest {
     void getEntryByTitleTest(){
         Entry entry = entryService.getEntryByTitle("My first diary entry");
         assertThat(entry.getBody()).isEqualTo(createEntryRequest1.getBody());
+    }
+    @Test
+    void updateEntryTest(){
+        UpdateEntryResponse updateEntryResponse = entryService.updateEntry(updateEntryRequest);
+        assertThat(updateEntryResponse.getMessage()).isEqualTo("Entry updated");
+        assertThat(updateEntryResponse.isUpdated()).isEqualTo(true);
     }
 }

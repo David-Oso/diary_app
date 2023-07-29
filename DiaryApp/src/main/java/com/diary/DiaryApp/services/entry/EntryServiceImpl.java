@@ -1,7 +1,9 @@
 package com.diary.DiaryApp.services.entry;
 
 import com.diary.DiaryApp.data.dto.request.CreateEntryRequest;
+import com.diary.DiaryApp.data.dto.request.UpdateEntryRequest;
 import com.diary.DiaryApp.data.dto.response.CreateEntryResponse;
+import com.diary.DiaryApp.data.dto.response.UpdateEntryResponse;
 import com.diary.DiaryApp.data.model.Diary;
 import com.diary.DiaryApp.data.model.Entry;
 import com.diary.DiaryApp.data.model.User;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -61,5 +64,38 @@ public class EntryServiceImpl implements EntryService{
     public Entry getEntryByTitle(String title) {
         return entryRepository.findEntryByTitle(title).orElseThrow(
                 ()-> new NotFoundException("Entry with title %s not found".formatted(title)));
+    }
+
+    @Override
+    public UpdateEntryResponse updateEntry(UpdateEntryRequest updateentryRequest) {
+        User user = userService.getUserById(updateentryRequest.getUserId());
+        Diary diary = user.getDiary();
+        Set<Entry> entries = diary.getEntries();
+        Entry entry = getEntryFromEntries(entries, updateentryRequest.getEntryId());
+        updateAnEntry(updateentryRequest, entry);
+        userService.saveUser(user);
+        return UpdateEntryResponse.builder()
+                .message("Entry updated")
+                .isUpdated(true)
+                .build();
+    }
+
+    private Entry getEntryFromEntries(Set<Entry> entries, Long entryId) {
+        for(Entry entry : entries){
+            if(entry.getId().equals(entryId))
+                return entry;
+        }
+        throw new NotFoundException("Entry not found");
+    }
+
+    private static void updateAnEntry(UpdateEntryRequest updateentryRequest, Entry entry) {
+        entry.setTitle(updateentryRequest.getTitle());
+        entry.setBody(updateentryRequest.getBody());
+        if (updateentryRequest.getBody().length() > 50)
+            entry.setDescription(
+                    updateentryRequest.getBody().substring(0, 50)+"...");
+        else
+            entry.setDescription(updateentryRequest.getBody());
+        entry.setUpdatedAt(LocalDateTime.now());
     }
 }

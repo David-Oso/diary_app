@@ -9,4 +9,5 @@ public class DiaryAppUtils {
     }
 
     public static final String TEST_IMAGE = "C:\\Users\\User\\IdeaProjects\\DiaryApp\\DiaryApp\\src\\main\\resources\\static\\test.jpg";
+    public static final int NUMBER_OF_ITEMS_PER_PAGE = 10;
 }
