@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 
 import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
@@ -58,6 +59,12 @@ class EntryServiceImplTest {
     void getEntryByTitleTest(){
         Entry entry = entryService.getEntryByTitle("My first diary entry");
         assertThat(entry.getBody()).isEqualTo(createEntryRequest1.getBody());
+    }
+
+    @Test
+    void getAllEntriesTest(){
+        Page<Entry> entries = entryService.getAllEntries(10);
+        assertThat(entries).isNotNull();
     }
     @Test
     void updateEntryTest(){

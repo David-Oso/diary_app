@@ -12,10 +12,15 @@ import com.diary.DiaryApp.exception.DiaryAppException;
 import com.diary.DiaryApp.exception.NotFoundException;
 import com.diary.DiaryApp.services.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+
+import static com.diary.DiaryApp.utilities.DiaryAppUtils.NUMBER_OF_ITEMS_PER_PAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +72,14 @@ public class EntryServiceImpl implements EntryService{
     }
 
     @Override
+    public Page<Entry> getAllEntries(int pageNumber) {
+        if(pageNumber < 1) pageNumber = 0;
+        else pageNumber -= 1;
+        Pageable pageable = PageRequest.of(pageNumber, NUMBER_OF_ITEMS_PER_PAGE);
+        return entryRepository.findAll(pageable);
+    }
+
+    @Override
     public UpdateEntryResponse updateEntry(UpdateEntryRequest updateentryRequest) {
         User user = userService.getUserById(updateentryRequest.getUserId());
         Diary diary = user.getDiary();
@@ -98,4 +111,10 @@ public class EntryServiceImpl implements EntryService{
             entry.setDescription(updateentryRequest.getBody());
         entry.setUpdatedAt(LocalDateTime.now());
     }
+
+    @Override
+    public Long numberOfEntries() {
+        return entryRepository.count();
+    }
+
 }

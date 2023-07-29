@@ -11,6 +11,8 @@ public interface EntryService {
     CreateEntryResponse createEntry(CreateEntryRequest createEntryRequest);
     Entry getEntryById(Long entryId);
     Entry getEntryByTitle(String title);
-    Page<Entry> getAllEntries();
+    Page<Entry> getAllEntries(int pageNumber);
     UpdateEntryResponse updateEntry(UpdateEntryRequest updateentryRequest);
+
+    Long numberOfEntries();
 }
