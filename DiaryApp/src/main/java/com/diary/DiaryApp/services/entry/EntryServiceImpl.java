@@ -33,12 +33,6 @@ public class EntryServiceImpl implements EntryService{
                 .build();
     }
 
-    @Override
-    public Entry getEntryById(Long entryId) {
-        return entryRepository.findById(entryId).orElseThrow(
-                ()-> new NotFoundException("Entry not found"));
-    }
-
     private void checkIfUserIsEnabled(User user) {
         if (!(user.isEnabled()))
             throw new DiaryAppException("User is not verified");
@@ -55,5 +49,17 @@ public class EntryServiceImpl implements EntryService{
             entry.setDescription(createEntryRequest.getBody());
         entry.setCreatedAt(LocalDateTime.now());
         return entry;
+    }
+
+    @Override
+    public Entry getEntryById(Long entryId) {
+        return entryRepository.findById(entryId).orElseThrow(
+                ()-> new NotFoundException("Entry not found"));
+    }
+
+    @Override
+    public Entry getEntryByTitle(String title) {
+        return entryRepository.findEntryByTitle(title).orElseThrow(
+                ()-> new NotFoundException("Entry with title %s not found".formatted(title)));
     }
 }

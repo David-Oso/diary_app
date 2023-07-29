@@ -45,4 +45,9 @@ class EntryServiceImplTest {
         assertThat(entry.getTitle()).isEqualTo(createEntryRequest1.getTitle());
         assertThat(entry.getBody()).isEqualTo(createEntryRequest1.getBody());
     }
+    @Test
+    void getEntryByTitleTest(){
+        Entry entry = entryService.getEntryByTitle("My second diary entry");
+        assertThat(entry.getBody()).isEqualTo(createEntryRequest2.getBody());
+    }
 }
