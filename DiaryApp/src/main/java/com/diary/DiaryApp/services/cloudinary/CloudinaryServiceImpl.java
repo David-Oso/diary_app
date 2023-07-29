@@ -21,6 +21,7 @@ public class CloudinaryServiceImpl implements CloudinaryService{
         try{
             Map<?, ?> response = cloudinary.uploader()
                     .upload(image.getBytes(), ObjectUtils.emptyMap());
+            log.info("\n::::::::::::::: IMAGE UPLOADED SUCCESSFULLY :::::::::::::::\n");
             return response.get("url").toString();
         }catch (IOException exception){
             throw new ImageUploadException(exception.getMessage());
