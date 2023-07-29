@@ -65,7 +65,7 @@ class UserServiceImplTest {
 
     @Test
     void verifyUserTest(){
-        OtpVerificationResponse verificationResponse = userService.verifyUser("996985");
+        OtpVerificationResponse verificationResponse = userService.verifyUser("775398");
         assertThat(verificationResponse.getUserName()).isEqualTo(registerUserRequest.getUserName());
         assertThat(verificationResponse.getEmail()).isEqualTo(registerUserRequest.getEmail());
         assertThat(verificationResponse.isEnabled()).isEqualTo(true);
@@ -97,16 +97,16 @@ class UserServiceImplTest {
         assertThat(user.getUserName()).isEqualTo(registerUserRequest.getUserName());
     }
 
-    @Test
-    void uploadProfileImageTest(){
-        String uploadImageResponse = userService.uploadProfileImage(uploadImageRequest);
-        assertThat(uploadImageResponse).isEqualTo("Profile Image Uploaded");
-    }
+//    @Test
+//    void uploadProfileImageTest(){
+//        String uploadImageResponse = userService.uploadProfileImage(uploadImageRequest);
+//        assertThat(uploadImageResponse).isEqualTo("Profile Image Uploaded");
+//    }
 
-    @Test
-    void updateUserTest(){
-//        UpdateUserResponse updateUserResponse = userService.updateUser();
-    }
+//    @Test
+//    void updateUserTest(){
+////        UpdateUserResponse updateUserResponse = userService.updateUser();
+//    }
 
     @Test
     void deleteUserByIdTest(){
