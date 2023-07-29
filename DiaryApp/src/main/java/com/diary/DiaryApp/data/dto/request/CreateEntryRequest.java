@@ -12,5 +12,5 @@ import lombok.Setter;
 public class CreateEntryRequest {
     private Long userId;
     private String title;
-    private String body;g
+    private String body;
 }

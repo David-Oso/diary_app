@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserLoginResponse login(UserLoginRequest loginRequest) {
-        User user = this.getUserByUserName(loginRequest.getUserName());
+        User user = getUserByUserName(loginRequest.getUserName());
         if(!(user.getPassword().equals(loginRequest.getPassword())))
             throw new InvalidDetailsException("Password is incorrect");
         else return UserLoginResponse.builder()
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getUserById(Long id) {
-        return this.userRepository.findById(id).orElseThrow(
+        return userRepository.findById(id).orElseThrow(
                 ()-> new NotFoundException("User not found!"));
     }
 
@@ -153,5 +153,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public Long getNumberOfUsers() {
         return userRepository.count();
+    }
+
+    @Override
+    public void saveUser(User user) {
+        userRepository.save(user);
     }
 }

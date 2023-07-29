@@ -18,4 +18,5 @@ public interface UserService {
 //    ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
     String deleteUserById(Long userId);
     Long getNumberOfUsers();
+    void saveUser(User user);
 }
