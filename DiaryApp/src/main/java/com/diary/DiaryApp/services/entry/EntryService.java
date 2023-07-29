@@ -8,4 +8,5 @@ public interface EntryService {
     CreateEntryResponse createEntry(CreateEntryRequest createEntryRequest);
     Entry getEntryById(Long entryId);
     Entry getEntryByTitle(String title);
+    UpdateEntryResponse updateEntry(UpdateEntryRequest updateentryRequest);
 }
