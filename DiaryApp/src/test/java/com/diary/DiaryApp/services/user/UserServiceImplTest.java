@@ -74,6 +74,14 @@ class UserServiceImplTest {
 
     @Test
     void updateUserTest(){
-        UpdateUserResponse updateUserResponse = userService.updateUser();
+//        UpdateUserResponse updateUserResponse = userService.updateUser();
+    }
+
+    @Test
+    void deleteUserByIdTest(){
+        assertThat(userService.getNumberOfUsers()).isEqualTo(1);
+        String response = userService.deleteUserById(1L);
+        assertThat(response).isEqualTo("User Deleted Successfully");
+        assertThat(userService.getNumberOfUsers()).isEqualTo(0);
     }
 }

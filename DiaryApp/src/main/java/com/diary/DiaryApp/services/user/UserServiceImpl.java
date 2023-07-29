@@ -131,4 +131,15 @@ public class UserServiceImpl implements UserService{
             }
         }
     }
+
+    @Override
+    public String deleteUserById(Long userId) {
+        userRepository.deleteById(userId);
+        return "User Deleted Successfully";
+    }
+
+    @Override
+    public Long getNumberOfUsers() {
+        return userRepository.count();
+    }
 }

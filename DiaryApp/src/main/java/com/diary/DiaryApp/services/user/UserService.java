@@ -1,13 +1,7 @@
 package com.diary.DiaryApp.services.user;
 
-import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
-import com.diary.DiaryApp.data.dto.request.UpdateUserRequest;
-import com.diary.DiaryApp.data.dto.request.UploadImageRequest;
-import com.diary.DiaryApp.data.dto.request.UserLoginRequest;
-import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
-import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
-import com.diary.DiaryApp.data.dto.response.UpdateUserResponse;
-import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
+import com.diary.DiaryApp.data.dto.request.*;
+import com.diary.DiaryApp.data.dto.response.*;
 import com.diary.DiaryApp.data.model.User;
 
 public interface UserService {
@@ -21,5 +15,7 @@ public interface UserService {
 //    String uploadProfileImage(UploadImageRequest uploadImageRequest)
     UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
 //    String sendResetPasswordMail(String email);
-    ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
+//    ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
+    String deleteUserById(Long userId);
+    Long getNumberOfUsers();
 }
