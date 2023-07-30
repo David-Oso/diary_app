@@ -133,7 +133,15 @@ public class EntryServiceImpl implements EntryService{
     }
 
     @Override
-    public Long getNumberOfEntries() {
+    public Long getNumberOfEntriesByUserId(Long userId) {
+        User user = userService.getUserById(userId);
+        Diary diary = user.getDiary();
+        Set<Entry> entries = diary.getEntries();
+        return (long)entries.size();
+    }
+
+    @Override
+    public Long getTotalNumberOfEntries() {
         return entryRepository.count();
     }
 }

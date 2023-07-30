@@ -76,7 +76,7 @@ class EntryServiceImplTest {
     void deleteEntryByUserIdAndEntryIdTest(){
         String response = entryService.deleteEntryByUserIdAndEntryId(1L, 2L);
         assertThat(response).isEqualTo("Entry deleted");
-        Long numberOfEntries = entryService.getNumberOfEntries();
+        Long numberOfEntries = entryService.getTotalNumberOfEntries();
         assertThat(numberOfEntries).isEqualTo(1);
     }
 
@@ -84,7 +84,19 @@ class EntryServiceImplTest {
     void deleteAllEntriesByUserIdTest(){
         String response = entryService.deleteAllByUserId(1L);
         assertThat(response).isEqualTo("All entries deleted");
-        Long numberOfEntries = entryService.getNumberOfEntries();
+        Long numberOfEntries = entryService.getTotalNumberOfEntries();
         assertThat(numberOfEntries).isEqualTo(0);
+    }
+
+    @Test
+    void getNumberOfEntriesByUserIdTest(){
+        Long numberOfEntriesByUserId = entryService.getNumberOfEntriesByUserId(1L);
+        assertThat(numberOfEntriesByUserId).isEqualTo(4L);
+    }
+
+    @Test
+    void getTotalNumberOfEntries(){
+        Long totalNumberOfEntries = entryService.getTotalNumberOfEntries();
+        assertThat(totalNumberOfEntries).isEqualTo(6);
     }
 }
