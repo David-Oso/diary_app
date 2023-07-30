@@ -79,4 +79,12 @@ class EntryServiceImplTest {
         Long numberOfEntries = entryService.getNumberOfEntries();
         assertThat(numberOfEntries).isEqualTo(1);
     }
+
+    @Test
+    void deleteAllEntriesByUserIdTest(){
+        String response = entryService.deleteAllByUserId(1L);
+        assertThat(response).isEqualTo("All entries deleted");
+        Long numberOfEntries = entryService.getNumberOfEntries();
+        assertThat(numberOfEntries).isEqualTo(0);
+    }
 }
