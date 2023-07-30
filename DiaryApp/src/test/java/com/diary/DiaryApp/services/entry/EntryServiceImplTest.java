@@ -32,7 +32,7 @@ class EntryServiceImplTest {
         createEntryRequest2.setBody("This is my second entry in my_diary app");
 
         updateEntryRequest = new UpdateEntryRequest();
-        updateEntryRequest.setUserId(1L);
+        updateEntryRequest.setUserId(2L);
         updateEntryRequest.setEntryId(2L);
         updateEntryRequest.setTitle("Updating the second entry");
         updateEntryRequest.setBody("I am currently updating the second entry");
@@ -71,5 +71,12 @@ class EntryServiceImplTest {
         UpdateEntryResponse updateEntryResponse = entryService.updateEntry(updateEntryRequest);
         assertThat(updateEntryResponse.getMessage()).isEqualTo("Entry updated");
         assertThat(updateEntryResponse.isUpdated()).isEqualTo(true);
+    }
+    @Test
+    void deleteEntryByUserIdAndEntryIdTest(){
+        String response = entryService.deleteEntryByUserIdAndEntryId(1L, 2L);
+        assertThat(response).isEqualTo("Entry deleted");
+        Long numberOfEntries = entryService.getNumberOfEntries();
+        assertThat(numberOfEntries).isEqualTo(1);
     }
 }

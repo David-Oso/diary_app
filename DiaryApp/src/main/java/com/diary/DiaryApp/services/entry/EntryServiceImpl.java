@@ -113,8 +113,30 @@ public class EntryServiceImpl implements EntryService{
     }
 
     @Override
-    public Long numberOfEntries() {
-        return entryRepository.count();
+    public String deleteEntryByUserIdAndEntryId(Long userId, Long entryId) {
+        validateId(userId);
+        validateId(entryId);
+       User user = userService.getUserById(userId);
+       Diary diary = user.getDiary();
+       Set<Entry> entries = diary.getEntries();
+       entries.removeIf(entry -> entry.getId().equals(entryId));
+       userService.saveUser(user);
+       return "Entry deleted";
     }
 
+    private void validateId(Long id) {
+        if(id == null)
+            throw new DiaryAppException("%s cannot be null".formatted(id));
+    }
+
+    @Override
+    public String deleteAllByUserId(Long userId) {
+
+        return ;
+    }
+
+    @Override
+    public Long getNumberOfEntries() {
+        return entryRepository.count();
+    }
 }

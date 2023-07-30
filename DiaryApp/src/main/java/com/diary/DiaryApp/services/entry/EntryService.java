@@ -13,6 +13,7 @@ public interface EntryService {
     Entry getEntryByTitle(String title);
     Page<Entry> getAllEntries(int pageNumber);
     UpdateEntryResponse updateEntry(UpdateEntryRequest updateentryRequest);
-
-    Long numberOfEntries();
+    String deleteEntryByUserIdAndEntryId(Long userId, Long entryId);
+    String deleteAllByUserId(Long userId);
+    Long getNumberOfEntries();
 }
