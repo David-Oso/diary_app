@@ -42,13 +42,3 @@ public class AuthController {
         return ResponseEntity.ok(loginResponse);
     }
 }
-
-
-
-//
-//@PostMapping(value="upload_profile_image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//@Operation(summary = "login", description = "authenticating registered user")
-//public ResponseEntity<?> uploadProfileImage(@Valid @ModelAttribute UploadImageRequest uploadImageRequest){
-//    String response = userService.uploadProfileImage(uploadImageRequest);
-//    return ResponseEntity.ok(response);
-//}
