@@ -13,5 +13,6 @@ import lombok.Setter;
 public class UpdateUserRequest {
     private Long userId;
     private String password;
-    private JsonPatch updatePayLoad;
+    private String newUserName;
+    private String newPassword;
 }

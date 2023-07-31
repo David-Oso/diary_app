@@ -27,7 +27,7 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Diary diary;
     private boolean isEnabled = false;
-    private final LocalDateTime createdAt = LocalDateTime.now();
+    private String createdAt;
     private String imageUrl;
 
 }

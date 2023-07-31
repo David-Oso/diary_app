@@ -1,12 +1,22 @@
 package com.diary.DiaryApp.services.user;
 
 import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
+import com.diary.DiaryApp.data.dto.request.UpdateUserRequest;
 import com.diary.DiaryApp.data.dto.request.UploadImageRequest;
 import com.diary.DiaryApp.data.dto.request.UserLoginRequest;
 import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
 import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
+import com.diary.DiaryApp.data.dto.response.UpdateUserResponse;
 import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
 import com.diary.DiaryApp.data.model.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jackson.jsonpointer.JsonPointer;
+import com.github.fge.jackson.jsonpointer.JsonPointerException;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.ReplaceOperation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import static com.diary.DiaryApp.utilities.DiaryAppUtils.TEST_IMAGE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +37,7 @@ class UserServiceImplTest {
     private RegisterUserRequest registerUserRequest2;
     private UserLoginRequest userLoginRequest;
     private UploadImageRequest uploadImageRequest;
+    private UpdateUserRequest updateUserRequest;
 
     @BeforeEach
     void setUp() {
@@ -47,6 +59,12 @@ class UserServiceImplTest {
         uploadImageRequest.setId(1L);
         MultipartFile profileImage = uploadTestImageFile(TEST_IMAGE);
         uploadImageRequest.setProfileImage(profileImage);
+
+        updateUserRequest = new UpdateUserRequest();
+        updateUserRequest.setUserId(1L);
+        updateUserRequest.setPassword("Password");
+        updateUserRequest.setNewUserName("Olu");
+        updateUserRequest.setNewPassword("NewPassword");
     }
 
     private MultipartFile uploadTestImageFile(String imageUrl){
@@ -74,13 +92,13 @@ class UserServiceImplTest {
 
     @Test
     void verifyUserTest(){
-        OtpVerificationResponse verificationResponse = userService.verifyUser("854820");
+        OtpVerificationResponse verificationResponse = userService.verifyUser("296233");
         assertThat(verificationResponse.getUserName()).isEqualTo(registerUserRequest1.getUserName());
         assertThat(verificationResponse.getEmail()).isEqualTo(registerUserRequest1.getEmail());
         assertThat(verificationResponse.isEnabled()).isEqualTo(true);
 //        assertThat(verificationResponse.getJwtTokenResponse()).isNotNull();
 
-        OtpVerificationResponse verificationResponse1 = userService.verifyUser("290457");
+        OtpVerificationResponse verificationResponse1 = userService.verifyUser("675508");
         assertThat(verificationResponse1.getUserName()).isEqualTo(registerUserRequest2.getUserName());
         assertThat(verificationResponse1.getEmail()).isEqualTo(registerUserRequest2.getEmail());
         assertThat(verificationResponse1.isEnabled()).isEqualTo(true);
@@ -118,10 +136,11 @@ class UserServiceImplTest {
         assertThat(uploadImageResponse).isEqualTo("Profile Image Uploaded");
     }
 
-//    @Test
-//    void updateUserTest(){
-////        UpdateUserResponse updateUserResponse = userService.updateUser();
-//    }
+    @Test
+    void updateUserTest(){
+        UpdateUserResponse updateUserResponse = userService.updateUser(updateUserRequest);
+        assertThat(updateUserResponse.getUserName()).isEqualTo("Olu");
+    }
 
     @Test
     void deleteUserByIdTest(){

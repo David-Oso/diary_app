@@ -27,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -40,6 +42,7 @@ public class UserServiceImpl implements UserService{
     public RegisterUserResponse registerUser(RegisterUserRequest registerRequest) {
         checkIfUserAlreadyExists(registerRequest.getUserName(), registerRequest.getEmail());
         User newUser = modelMapper.map(registerRequest, User.class);
+        newUser.setCreatedAt(LocalDateTime.now().toString());
         userRepository.save(newUser);
         String otp = otpService.generateAndSaveOtp(newUser);
         log.info("\n\n:::::::::::::::::::: GENERATED OTP -> %s ::::::::::::::::::::\n".formatted(otp));
@@ -120,29 +123,48 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        User user = this.getUserById(updateUserRequest.getUserId());
-        if(user.getPassword().equals(updateUserRequest.getPassword()))
+        User user = getUserById(updateUserRequest.getUserId());
+        if(!(user.getPassword().equals(updateUserRequest.getPassword()))){
             throw new InvalidDetailsException("Password is incorrect");
-        else {
-            JsonNode node = objectMapper.convertValue(user, JsonNode.class);
-            JsonPatch updatePayload = updateUserRequest.getUpdatePayLoad();
-            try{
-                JsonNode updateNode = updatePayload.apply(node);
-                var updatedUser = objectMapper.convertValue(updateNode, User.class);
-                updatedUser = userRepository.save(updatedUser);
-                return UpdateUserResponse.builder()
-                        .id(updatedUser.getId())
-                        .userName(updatedUser.getUserName())
-                        .email(updatedUser.getEmail())
-                        .isEnabled(updatedUser.isEnabled())
-                        .build();
-            }catch (JsonPatchException exception){
-                log.error(exception.getMessage());
-                throw new RuntimeException();
-            }
+        }
+        else{
+            user.setUserName(updateUserRequest.getNewUserName());
+            user.setPassword(updateUserRequest.getNewPassword());
+            User savedUser = userRepository.save(user);
+            return UpdateUserResponse.builder()
+                    .id(savedUser.getId())
+                    .userName(savedUser.getUserName())
+                    .email(savedUser.getEmail())
+                    .isEnabled(savedUser.isEnabled())
+                    .build();
         }
     }
+
+//    @Override
+//    public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest) {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        User user = this.getUserById(updateUserRequest.getUserId());
+//        if(user.getPassword().equals(updateUserRequest.getPassword()))
+//            throw new InvalidDetailsException("Password is incorrect");
+//        else {
+//            JsonNode node = objectMapper.convertValue(user, JsonNode.class);
+//            JsonPatch updatePayload = updateUserRequest.getUpdatePayLoad();
+//            try{
+//                JsonNode updateNode = updatePayload.apply(node);
+//                var updatedUser = objectMapper.convertValue(updateNode, User.class);
+//                updatedUser = userRepository.save(updatedUser);
+//                return UpdateUserResponse.builder()
+//                        .id(updatedUser.getId())
+//                        .userName(updatedUser.getUserName())
+//                        .email(updatedUser.getEmail())
+//                        .isEnabled(updatedUser.isEnabled())
+//                        .build();
+//            }catch (JsonPatchException exception){
+//                log.error(exception.getMessage());
+//                throw new RuntimeException();
+//            }
+//        }
+//    }
 
     @Override
     public String deleteUserById(Long userId) {
