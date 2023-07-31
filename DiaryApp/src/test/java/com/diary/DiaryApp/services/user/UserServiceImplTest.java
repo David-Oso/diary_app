@@ -1,13 +1,7 @@
 package com.diary.DiaryApp.services.user;
 
-import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
-import com.diary.DiaryApp.data.dto.request.UpdateUserRequest;
-import com.diary.DiaryApp.data.dto.request.UploadImageRequest;
-import com.diary.DiaryApp.data.dto.request.UserLoginRequest;
-import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
-import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
-import com.diary.DiaryApp.data.dto.response.UpdateUserResponse;
-import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
+import com.diary.DiaryApp.data.dto.request.*;
+import com.diary.DiaryApp.data.dto.response.*;
 import com.diary.DiaryApp.data.model.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -38,6 +32,7 @@ class UserServiceImplTest {
     private UserLoginRequest userLoginRequest;
     private UploadImageRequest uploadImageRequest;
     private UpdateUserRequest updateUserRequest;
+    private ResetPasswordRequest resetPasswordRequest;
 
     @BeforeEach
     void setUp() {
@@ -65,6 +60,11 @@ class UserServiceImplTest {
         updateUserRequest.setPassword("Password");
         updateUserRequest.setNewUserName("Olu");
         updateUserRequest.setNewPassword("NewPassword");
+
+        resetPasswordRequest = new ResetPasswordRequest();
+        resetPasswordRequest.setOtp("818434");
+        resetPasswordRequest.setNewPassword("NewPassword");
+        resetPasswordRequest.setConfirmPassword("NewPassword");
     }
 
     private MultipartFile uploadTestImageFile(String imageUrl){
@@ -149,9 +149,16 @@ class UserServiceImplTest {
     }
 
     @Test
-    void resetPasswordMail(){
+    void resetPasswordMailTest(){
         String response = userService.sendResetPasswordMail(3L);
         assertThat(response).isEqualTo("Check your email to reset your password");
+    }
+
+    @Test
+    void resetPasswordTest(){
+        ResetPasswordResponse resetPasswordResponse = userService.resetPassword(resetPasswordRequest);
+        assertThat(resetPasswordResponse.getMessage()).isEqualTo("Reset password successful");
+        assertThat(resetPasswordResponse.isSuccess()).isEqualTo(true);
     }
 
     @Test

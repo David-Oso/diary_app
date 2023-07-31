@@ -15,7 +15,7 @@ public interface UserService {
     String uploadProfileImage(UploadImageRequest uploadImageRequest);
     UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
     String sendResetPasswordMail(Long userId);
-//    ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
+    ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
     String deleteUserById(Long userId);
     Long getNumberOfUsers();
     void saveUser(User user);

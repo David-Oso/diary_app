@@ -1,13 +1,7 @@
 package com.diary.DiaryApp.services.user;
 
-import com.diary.DiaryApp.data.dto.request.RegisterUserRequest;
-import com.diary.DiaryApp.data.dto.request.UpdateUserRequest;
-import com.diary.DiaryApp.data.dto.request.UploadImageRequest;
-import com.diary.DiaryApp.data.dto.request.UserLoginRequest;
-import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
-import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
-import com.diary.DiaryApp.data.dto.response.UpdateUserResponse;
-import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
+import com.diary.DiaryApp.data.dto.request.*;
+import com.diary.DiaryApp.data.dto.response.*;
 import com.diary.DiaryApp.data.model.Diary;
 import com.diary.DiaryApp.data.model.User;
 import com.diary.DiaryApp.data.repository.UserRepository;
@@ -169,6 +163,21 @@ public class UserServiceImpl implements UserService{
         String htmlContent = String.format(mailTemplate, name, otp, phoneNumber);
         mailService.sendMail(email, subject, htmlContent);
         return "Check your email to reset your password";
+    }
+
+    @Override
+    public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        OtpEntity otpEntity = otpService.validateOtp(resetPasswordRequest.getOtp());
+        User user = otpEntity.getUser();
+        user.setPassword(resetPasswordRequest.getNewPassword());
+        if(!(user.getPassword().equals(resetPasswordRequest.getConfirmPassword())))
+            throw new InvalidDetailsException("Password doesn't match");
+        userRepository.save(user);
+        otpService.deleteOtp(otpEntity);
+        return ResetPasswordResponse.builder()
+                .message("Reset password successful")
+                .isSuccess(true)
+                .build();
     }
 
 //    @Override
