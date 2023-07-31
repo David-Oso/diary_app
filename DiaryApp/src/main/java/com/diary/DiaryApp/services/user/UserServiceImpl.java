@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService{
         if(user.isEnabled()) throw new DiaryAppException("User is already enabled");
         else{
             String otp = otpService.generateAndSaveOtp(user);
+            log.info("\n:::::::::: RESET PASSWORD OTP -> %s\n".formatted(otp));
             sendDiaryAppActivationMail(user, otp);
             return "Another otp has been send to your email. Please check to proceed";
         }
