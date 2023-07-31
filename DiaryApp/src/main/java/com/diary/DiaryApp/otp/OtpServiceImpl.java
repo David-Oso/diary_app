@@ -16,14 +16,8 @@ public class OtpServiceImpl implements OtpService{
     @Override
     public String generateAndSaveOtp(User user) {
         OtpEntity existingOtpEntity = otpRepository.findOtpEntityByUser(user);
-        if(existingOtpEntity != null){
-            User foundUser = existingOtpEntity.getUser();
-            if (foundUser.isEnabled()){
-                otpRepository.delete(existingOtpEntity);
-                throw new OtpException("User is already enabled");
-            }
-            else otpRepository.delete(existingOtpEntity);
-        }
+        if(existingOtpEntity != null)
+            otpRepository.delete(existingOtpEntity);
         String generatedOtp = DiaryAppUtils.generateOtp();
         OtpEntity newOtpEntity = OtpEntity.builder()
                 .user(user)

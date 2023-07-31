@@ -91,8 +91,14 @@ class UserServiceImplTest {
     }
 
     @Test
+    void resendOtpByEmailTest(){
+        String response = userService.resendOtpByEmail("hema@gmail.com");
+        assertThat(response).isEqualTo("Another otp has been send to your email. Please check to proceed");
+
+    }
+    @Test
     void verifyUserTest(){
-        OtpVerificationResponse verificationResponse = userService.verifyUser("296233");
+        OtpVerificationResponse verificationResponse = userService.verifyUser("513237");
         assertThat(verificationResponse.getUserName()).isEqualTo(registerUserRequest1.getUserName());
         assertThat(verificationResponse.getEmail()).isEqualTo(registerUserRequest1.getEmail());
         assertThat(verificationResponse.isEnabled()).isEqualTo(true);

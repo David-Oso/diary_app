@@ -11,17 +11,12 @@ import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
 import com.diary.DiaryApp.data.model.Diary;
 import com.diary.DiaryApp.data.model.User;
 import com.diary.DiaryApp.data.repository.UserRepository;
-import com.diary.DiaryApp.exception.AlreadyExistsException;
-import com.diary.DiaryApp.exception.InvalidDetailsException;
-import com.diary.DiaryApp.exception.NotFoundException;
-import com.diary.DiaryApp.exception.OtpException;
+import com.diary.DiaryApp.exception.*;
 import com.diary.DiaryApp.otp.OtpEntity;
 import com.diary.DiaryApp.otp.OtpService;
 import com.diary.DiaryApp.services.cloudinary.CloudinaryService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
+import com.diary.DiaryApp.services.mail.MailService;
+import com.diary.DiaryApp.utilities.DiaryAppUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -37,14 +32,16 @@ public class UserServiceImpl implements UserService{
     private final ModelMapper modelMapper;
     private final OtpService otpService;
     private final CloudinaryService cloudinaryService;
+    private final MailService mailService;
 
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest registerRequest) {
         checkIfUserAlreadyExists(registerRequest.getUserName(), registerRequest.getEmail());
         User newUser = modelMapper.map(registerRequest, User.class);
         newUser.setCreatedAt(LocalDateTime.now().toString());
-        userRepository.save(newUser);
+        User savedUser = userRepository.save(newUser);
         String otp = otpService.generateAndSaveOtp(newUser);
+        sendDiaryAppActivationMail(savedUser, otp);
         log.info("\n\n:::::::::::::::::::: GENERATED OTP -> %s ::::::::::::::::::::\n".formatted(otp));
         return RegisterUserResponse.builder()
                 .message("Check your mail for otp to activate your diary")
@@ -57,6 +54,26 @@ public class UserServiceImpl implements UserService{
             throw new AlreadyExistsException("user name is taken");
         else if(userRepository.existsByEmail(email))
             throw new AlreadyExistsException("email is taken");
+    }
+
+    private void sendDiaryAppActivationMail(User user, String otp) {
+        String mailTemplate = DiaryAppUtils.GET_DIARY_APP_ACTIVATION_MAIL_TEMPLATE;
+        String name = user.getUserName();
+        String recipientEmail = user.getEmail();
+        String subject = "Diary App Activation";
+        String htmlContent = String.format(mailTemplate, name, otp);
+        mailService.sendMail(recipientEmail, subject, htmlContent);
+    }
+
+    @Override
+    public String resendOtpByEmail(String email) {
+        User user = getUserByEmail(email);
+        if(user.isEnabled()) throw new DiaryAppException("User is already enabled");
+        else{
+            String otp = otpService.generateAndSaveOtp(user);
+            sendDiaryAppActivationMail(user, otp);
+            return "Another otp has been send to your email. Please check to proceed";
+        }
     }
 
     @Override
