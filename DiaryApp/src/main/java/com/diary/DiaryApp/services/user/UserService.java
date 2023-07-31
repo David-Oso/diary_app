@@ -6,7 +6,7 @@ import com.diary.DiaryApp.data.model.User;
 
 public interface UserService {
     RegisterUserResponse registerUser(RegisterUserRequest registerUserRequest);
-//    Sting resendOtpToRegisteredEmail(String email);
+    String resendOtpByEmail(String email);
     OtpVerificationResponse verifyUser(String otp);
     UserLoginResponse login(UserLoginRequest loginRequest);
     User getUserById(Long id);
