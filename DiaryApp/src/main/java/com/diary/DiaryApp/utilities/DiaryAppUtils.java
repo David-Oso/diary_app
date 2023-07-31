@@ -16,6 +16,7 @@ public class DiaryAppUtils {
     public static final int NUMBER_OF_ITEMS_PER_PAGE = 10;
 
     private static final String DIARY_APP_ACTIVATION_TEMPLATE_LOCATION = "C:\\Users\\User\\IdeaProjects\\DiaryApp\\DiaryApp\\src\\main\\resources\\templates\\diaryAppActivation.html";
+    private static final String RESET_PASSWORD_MAIL_TEMPLATE_LOCATION = "C:\\Users\\User\\IdeaProjects\\DiaryApp\\DiaryApp\\src\\main\\resources\\templates\\resetPasswordMail.html";
 
     private static String getTemplate(String templateLocation){
         try(BufferedReader reader =
@@ -28,4 +29,5 @@ public class DiaryAppUtils {
 
 
     public static String GET_DIARY_APP_ACTIVATION_MAIL_TEMPLATE = getTemplate(DIARY_APP_ACTIVATION_TEMPLATE_LOCATION);
+    public static String GET_RESET_PASSWORD_MAIL_TEMPLATE = getTemplate(RESET_PASSWORD_MAIL_TEMPLATE_LOCATION);
 }

@@ -157,6 +157,13 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    @Override
+    public String sendResetPasswordMail(Long userId) {
+        User user = getUserById(userId);
+
+        return null;
+    }
+
 //    @Override
 //    public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest) {
 //        ObjectMapper objectMapper = new ObjectMapper();
