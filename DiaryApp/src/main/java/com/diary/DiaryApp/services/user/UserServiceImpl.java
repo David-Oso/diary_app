@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService{
         if(user.isEnabled()) throw new DiaryAppException("User is already enabled");
         else{
             String otp = otpService.generateAndSaveOtp(user);
-            log.info("\n:::::::::: RESET PASSWORD OTP -> %s\n".formatted(otp));
+            log.info("\n:::::::::: RESENT OTP -> %s\n".formatted(otp));
             sendDiaryAppActivationMail(user, otp);
             return "Another otp has been send to your email. Please check to proceed";
         }
@@ -163,6 +163,7 @@ public class UserServiceImpl implements UserService{
         String subject = "Reset Your Password";
         String htmlContent = String.format(mailTemplate, name, otp, phoneNumber);
         mailService.sendMail(email, subject, htmlContent);
+        log.info("\n:::::::::: RESET PASSWORD OTP -> %s\n".formatted(otp));
         return "Check your email to reset your password";
     }
 

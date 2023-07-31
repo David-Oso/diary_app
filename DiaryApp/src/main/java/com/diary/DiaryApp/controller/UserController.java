@@ -48,7 +48,7 @@ public class UserController {
         return ResponseEntity.ok(updateUserResponse);
     }
 
-    @PostMapping("send_reset_password_mail/{id}")
+    @GetMapping("send_reset_password_mail/{id}")
     public ResponseEntity<?> sendResetPasswordMail(@Valid @PathVariable Long id){
         String response = userService.sendResetPasswordMail(id);
         return ResponseEntity.ok(response);
