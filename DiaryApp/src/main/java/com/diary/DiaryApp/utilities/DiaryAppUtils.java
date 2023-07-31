@@ -11,6 +11,7 @@ public class DiaryAppUtils {
     public static String generateOtp(){
         return String.valueOf(secureRandom.nextInt(101000, 1000000));
     }
+    public static final String DIARY_PHONE_NUMBER = "+2349040987890";
 
     public static final String TEST_IMAGE = "C:\\Users\\User\\IdeaProjects\\DiaryApp\\DiaryApp\\src\\main\\resources\\static\\test.jpg";
     public static final int NUMBER_OF_ITEMS_PER_PAGE = 10;

@@ -149,6 +149,12 @@ class UserServiceImplTest {
     }
 
     @Test
+    void resetPasswordMail(){
+        String response = userService.sendResetPasswordMail(3L);
+        assertThat(response).isEqualTo("Check your email to reset your password");
+    }
+
+    @Test
     void deleteUserByIdTest(){
         assertThat(userService.getNumberOfUsers()).isEqualTo(2);
         String response = userService.deleteUserById(1L);

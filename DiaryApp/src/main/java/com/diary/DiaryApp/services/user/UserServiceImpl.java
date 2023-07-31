@@ -160,8 +160,15 @@ public class UserServiceImpl implements UserService{
     @Override
     public String sendResetPasswordMail(Long userId) {
         User user = getUserById(userId);
-
-        return null;
+        String mailTemplate = DiaryAppUtils.GET_RESET_PASSWORD_MAIL_TEMPLATE;
+        String name = user.getUserName();
+        String otp = otpService.generateAndSaveOtp(user);
+        String phoneNumber = DiaryAppUtils.DIARY_PHONE_NUMBER;
+        String email = user.getEmail();
+        String subject = "Reset Your Password";
+        String htmlContent = String.format(mailTemplate, name, otp, phoneNumber);
+        mailService.sendMail(email, subject, htmlContent);
+        return "Check your email to reset your password";
     }
 
 //    @Override
