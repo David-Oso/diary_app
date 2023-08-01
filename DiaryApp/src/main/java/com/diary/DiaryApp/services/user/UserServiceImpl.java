@@ -3,6 +3,7 @@ package com.diary.DiaryApp.services.user;
 import com.diary.DiaryApp.data.dto.request.*;
 import com.diary.DiaryApp.data.dto.response.*;
 import com.diary.DiaryApp.data.model.Diary;
+import com.diary.DiaryApp.data.model.Role;
 import com.diary.DiaryApp.data.model.User;
 import com.diary.DiaryApp.data.repository.UserRepository;
 import com.diary.DiaryApp.exception.*;
@@ -17,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -33,10 +35,11 @@ public class UserServiceImpl implements UserService{
         checkIfUserAlreadyExists(registerRequest.getUserName(), registerRequest.getEmail());
         User newUser = modelMapper.map(registerRequest, User.class);
         newUser.setCreatedAt(LocalDateTime.now().toString());
+        newUser.setRoles(Set.of(Role.USER));
         User savedUser = userRepository.save(newUser);
         String otp = otpService.generateAndSaveOtp(newUser);
         sendDiaryAppActivationMail(savedUser, otp);
-        log.info("\n\n:::::::::::::::::::: GENERATED OTP -> %s ::::::::::::::::::::\n".formatted(otp));
+//        log.info("\n\n:::::::::::::::::::: GENERATED OTP -> %s ::::::::::::::::::::\n".formatted(otp));
         return RegisterUserResponse.builder()
                 .message("Check your mail for otp to activate your diary")
                 .isEnabled(false)
@@ -66,7 +69,7 @@ public class UserServiceImpl implements UserService{
         else{
             String otp = otpService.generateAndSaveOtp(user);
             log.info("\n:::::::::: RESENT OTP -> %s\n".formatted(otp));
-            sendDiaryAppActivationMail(user, otp);
+//            sendDiaryAppActivationMail(user, otp);
             return "Another otp has been send to your email. Please check to proceed";
         }
     }
@@ -163,7 +166,7 @@ public class UserServiceImpl implements UserService{
         String subject = "Reset Your Password";
         String htmlContent = String.format(mailTemplate, name, otp, phoneNumber);
         mailService.sendMail(email, subject, htmlContent);
-        log.info("\n:::::::::: RESET PASSWORD OTP -> %s\n".formatted(otp));
+//        log.info("\n:::::::::: RESET PASSWORD OTP -> %s\n".formatted(otp));
         return "Check your email to reset your password";
     }
 
