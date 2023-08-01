@@ -1,7 +1,7 @@
 package com.diary.DiaryApp.config.security.filter;
 
-import com.diary.DiaryApp.config.security.jwtToken.model.JwtToken;
-import com.diary.DiaryApp.config.security.jwtToken.service.JwtTokenService;
+import com.diary.DiaryApp.config.security.jwtToken.model.DiaryToken;
+import com.diary.DiaryApp.config.security.jwtToken.service.DiaryTokenService;
 import com.diary.DiaryApp.config.security.services.DiaryUserDetailsService;
 import com.diary.DiaryApp.config.security.services.JwtService;
 import com.diary.DiaryApp.config.security.user.AuthenticatedUser;
@@ -31,7 +31,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class DiaryAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenService jwtTokenService;
+    private final DiaryTokenService diaryTokenService;
     private final DiaryUserDetailsService diaryUserDetailsService;
     private final ObjectMapper objectMapper;
     private final JwtService jwtService;
@@ -77,14 +77,14 @@ public class DiaryAuthenticationFilter extends UsernamePasswordAuthenticationFil
         final AuthenticatedUser authenticatedUser =
                 (AuthenticatedUser) diaryUserDetailsService.loadUserByUsername(email);
 
-        final JwtToken jwtToken = JwtToken.builder()
+        final DiaryToken diaryToken = DiaryToken.builder()
                 .user(authenticatedUser.getUser())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .isExpired(false)
                 .isExpired(false)
                 .build();
-        jwtTokenService.saveToken(jwtToken);
+        diaryTokenService.saveToken(diaryToken);
 
         final AuthenticationToken authenticationToken =
                 AuthenticationToken.builder()

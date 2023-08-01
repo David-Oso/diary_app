@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JwtToken {
+public class DiaryToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

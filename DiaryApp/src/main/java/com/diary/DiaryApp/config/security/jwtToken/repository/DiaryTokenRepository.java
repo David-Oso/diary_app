@@ -1,29 +1,29 @@
 package com.diary.DiaryApp.config.security.jwtToken.repository;
 
-import com.diary.DiaryApp.config.security.jwtToken.model.JwtToken;
+import com.diary.DiaryApp.config.security.jwtToken.model.DiaryToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface JwtTokenRepository extends JpaRepository<JwtToken, Long> {
+public interface DiaryTokenRepository extends JpaRepository<DiaryToken, Long> {
     @Query("""
-            select token from JwtToken token
+            select token from DiaryToken token
             where token.accessToken = :anyToken or token.refreshToken = :anyToken and token.isRevoked = false
             """)
-    Optional<JwtToken> findValidTokenByToken(String anyToken);
+    Optional<DiaryToken> findValidTokenByToken(String anyToken);
 
     @Query("""
-            select tokens from JwtToken tokens
+            select tokens from DiaryToken tokens
             where tokens.isRevoked = true or tokens.isExpired = true
             """)
-    List<JwtToken> findAllInvalidTokens();
+    List<DiaryToken> findAllInvalidTokens();
 
     @Query("""
-            select token from JwtToken  token
+            select token from DiaryToken  token
             where token.isExpired = false or token.isRevoked = false
             """)
-    List<JwtToken> findAllTokenNotExpired();
+    List<DiaryToken> findAllTokenNotExpired();
 
 }

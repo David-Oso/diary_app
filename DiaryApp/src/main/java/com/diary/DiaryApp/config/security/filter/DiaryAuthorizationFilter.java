@@ -1,6 +1,6 @@
 package com.diary.DiaryApp.config.security.filter;
 
-import com.diary.DiaryApp.config.security.jwtToken.service.JwtTokenService;
+import com.diary.DiaryApp.config.security.jwtToken.service.DiaryTokenService;
 import com.diary.DiaryApp.config.security.services.DiaryUserDetailsService;
 import com.diary.DiaryApp.config.security.services.JwtService;
 import jakarta.annotation.Nonnull;
@@ -25,7 +25,7 @@ import static org.apache.http.HttpHeaders.AUTHORIZATION;
 @AllArgsConstructor
 public class DiaryAuthorizationFilter extends OncePerRequestFilter {
     private final DiaryUserDetailsService diaryUserDetailsService;
-    private final JwtTokenService jwtTokenService;
+    private final DiaryTokenService diaryTokenService;
     private final JwtService jwtService;
 
     @Override
@@ -40,7 +40,7 @@ public class DiaryAuthorizationFilter extends OncePerRequestFilter {
                 StringUtils.startsWithIgnoreCase(authHeader, bearer)){
             final String accessToken = authHeader.substring(bearer.length());
             if (jwtService.isValid(accessToken) &&
-                    jwtTokenService.isTokenValid(accessToken)){
+                    diaryTokenService.isTokenValid(accessToken)){
                 final String email = jwtService.extractUserNameFromToken(accessToken);
                 if(email != null){
                     UserDetails userDetails =

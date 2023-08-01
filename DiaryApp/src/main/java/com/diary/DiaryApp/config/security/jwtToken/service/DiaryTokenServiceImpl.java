@@ -1,7 +1,7 @@
 package com.diary.DiaryApp.config.security.jwtToken.service;
 
-import com.diary.DiaryApp.config.security.jwtToken.model.JwtToken;
-import com.diary.DiaryApp.config.security.jwtToken.repository.JwtTokenRepository;
+import com.diary.DiaryApp.config.security.jwtToken.model.DiaryToken;
+import com.diary.DiaryApp.config.security.jwtToken.repository.DiaryTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -12,47 +12,47 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class JwtTokenServiceImpl implements JwtTokenService{
-    private final JwtTokenRepository jwtTokenRepository;
+public class DiaryTokenServiceImpl implements DiaryTokenService {
+    private final DiaryTokenRepository diaryTokenRepository;
     @Override
-    public void saveToken(JwtToken jwtToken) {
-        jwtTokenRepository.save(jwtToken);
+    public void saveToken(DiaryToken diaryToken) {
+        diaryTokenRepository.save(diaryToken);
     }
 
     @Override
-    public Optional<JwtToken> getValidTokenByAnyToken(String anyToken) {
-        return jwtTokenRepository.findValidTokenByToken(anyToken);
+    public Optional<DiaryToken> getValidTokenByAnyToken(String anyToken) {
+        return diaryTokenRepository.findValidTokenByToken(anyToken);
     }
 
     @Override
     public void revokeToken(String accessToken) {
-        final JwtToken classToken = getValidTokenByAnyToken(accessToken)
+        final DiaryToken classToken = getValidTokenByAnyToken(accessToken)
                 .orElse(null);
         if (classToken != null) {
             classToken.setRevoked(true);
-            jwtTokenRepository.save(classToken);
+            diaryTokenRepository.save(classToken);
         }
     }
 
     @Override
     public boolean isTokenValid(String anyToken) {
         return getValidTokenByAnyToken(anyToken)
-                .map(jwtToken -> !jwtToken.isRevoked())
+                .map(diaryToken -> !diaryToken.isRevoked())
                 .orElse(false);
     }
 
     @Scheduled(cron = "0 0 0 * * ?", zone = "Africa/Lagos")
     private void deleteAllRevokedTokens(){
-        final List<JwtToken> allRevokedTokens =
-                jwtTokenRepository.findAllInvalidTokens();
+        final List<DiaryToken> allRevokedTokens =
+                diaryTokenRepository.findAllInvalidTokens();
         if(!allRevokedTokens.isEmpty())
-            jwtTokenRepository.deleteAll(allRevokedTokens);
+            diaryTokenRepository.deleteAll(allRevokedTokens);
     }
 
     @Scheduled(cron = "0 0 */6 * * * ?", zone = "Africa/Lagos")
     private void setTokenExpiration() {
-        final List<JwtToken> notExpiredTokens =
-                jwtTokenRepository.findAllTokenNotExpired();
+        final List<DiaryToken> notExpiredTokens =
+                diaryTokenRepository.findAllTokenNotExpired();
         notExpiredTokens.stream()
                 .filter(
                         token -> token.getCreatedAt()
@@ -60,6 +60,6 @@ public class JwtTokenServiceImpl implements JwtTokenService{
                                 .isBefore(LocalDateTime.now())
                 )
                 .forEach(token -> token.setExpired(true));
-        jwtTokenRepository.saveAll(notExpiredTokens);
+        diaryTokenRepository.saveAll(notExpiredTokens);
     }
 }
