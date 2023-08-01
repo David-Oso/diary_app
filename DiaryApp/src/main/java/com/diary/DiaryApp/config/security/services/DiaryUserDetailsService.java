@@ -15,8 +15,8 @@ public class DiaryUserDetailsService implements UserDetailsService {
     private final UserService userService;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        final User user = userService.getUserByEmail(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        final User user = userService.getUserByUserName(username);
         return new AuthenticatedUser(user);
     }
 }

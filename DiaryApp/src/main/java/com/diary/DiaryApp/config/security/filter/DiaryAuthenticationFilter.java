@@ -45,7 +45,7 @@ public class DiaryAuthenticationFilter extends UsernamePasswordAuthenticationFil
 
             final Authentication authentication =
                     new UsernamePasswordAuthenticationToken(
-                            user.getEmail(),
+                            user.getUserName(),
                             user.getPassword());
 
             final Authentication authenticationResult =
@@ -69,13 +69,13 @@ public class DiaryAuthenticationFilter extends UsernamePasswordAuthenticationFil
         authResult.getAuthorities().forEach(
                 role -> claims.put("claim", role));
 
-        final String email = authResult.getPrincipal().toString();
+        final String username = authResult.getPrincipal().toString();
 
-        final String accessToken = jwtService.generateAccessToken(claims, email);
-        final String refreshToken = jwtService.generateRefreshToken(email);
+        final String accessToken = jwtService.generateAccessToken(claims, username);
+        final String refreshToken = jwtService.generateRefreshToken(username);
 
         final AuthenticatedUser authenticatedUser =
-                (AuthenticatedUser) diaryUserDetailsService.loadUserByUsername(email);
+                (AuthenticatedUser) diaryUserDetailsService.loadUserByUsername(username);
 
         final DiaryToken diaryToken = DiaryToken.builder()
                 .user(authenticatedUser.getUser())

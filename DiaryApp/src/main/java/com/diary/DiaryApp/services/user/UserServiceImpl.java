@@ -1,5 +1,8 @@
 package com.diary.DiaryApp.services.user;
 
+import com.diary.DiaryApp.config.security.jwtToken.model.DiaryToken;
+import com.diary.DiaryApp.config.security.jwtToken.service.DiaryTokenService;
+import com.diary.DiaryApp.config.security.services.JwtService;
 import com.diary.DiaryApp.data.dto.request.*;
 import com.diary.DiaryApp.data.dto.response.*;
 import com.diary.DiaryApp.data.model.Diary;
@@ -15,10 +18,15 @@ import com.diary.DiaryApp.utilities.DiaryAppUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -29,12 +37,17 @@ public class UserServiceImpl implements UserService{
     private final OtpService otpService;
     private final CloudinaryService cloudinaryService;
     private final MailService mailService;
+    private final JwtService jwtService;
+    private final DiaryTokenService diaryTokenService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest registerRequest) {
         checkIfUserAlreadyExists(registerRequest.getUserName(), registerRequest.getEmail());
         User newUser = modelMapper.map(registerRequest, User.class);
         newUser.setCreatedAt(LocalDateTime.now().toString());
+        String encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
+        newUser.setPassword(encodedPassword);
         newUser.setRoles(Set.of(Role.USER));
         User savedUser = userRepository.save(newUser);
         String otp = otpService.generateAndSaveOtp(newUser);
@@ -88,26 +101,64 @@ public class UserServiceImpl implements UserService{
         return getOtpVerificationResponse(savedUser);
     }
 
-    private static OtpVerificationResponse getOtpVerificationResponse(User savedUser) {
+    private OtpVerificationResponse getOtpVerificationResponse(User savedUser) {
         return OtpVerificationResponse.builder()
                 .id(savedUser.getId())
                 .userName(savedUser.getUserName())
                 .email(savedUser.getEmail())
                 .isEnabled(savedUser.isEnabled())
-//                .jwtTokenResponse()
+                .jwtTokenResponse(getJwtTokenResponse(savedUser))
                 .build();
     }
 
-    @Override
-    public UserLoginResponse login(UserLoginRequest loginRequest) {
-        User user = getUserByUserName(loginRequest.getUserName());
-        if(!(user.getPassword().equals(loginRequest.getPassword())))
-            throw new InvalidDetailsException("Password is incorrect");
-        else return UserLoginResponse.builder()
-                .message("Authentication Successful")
-//                .jwtTokenResponse()
+    private JwtTokenResponse getJwtTokenResponse(User user) {
+        final String username = user.getUserName();
+        final String accessToken = jwtService.generateAccessToken(
+                getUserAuthority(user),
+                username
+        );
+        final String refreshToken = jwtService.generateRefreshToken(username);
+
+        saveDiaryToken(user, accessToken, refreshToken);
+        return JwtTokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
+
+    private void saveDiaryToken(User user, String accessToken, String refreshToken) {
+        final DiaryToken diaryToken =
+                DiaryToken.builder()
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .user(user)
+                        .isExpired(false)
+                        .isRevoked(false)
+                        .build();
+        diaryTokenService.saveToken(diaryToken);
+    }
+
+    private static Map<String, Object> getUserAuthority(User user) {
+        return user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .collect(
+                        Collectors.toMap(
+                                authority -> "claim",
+                                Function.identity()
+                        )
+                );
+    }
+
+//    @Override
+//    public UserLoginResponse login(UserLoginRequest loginRequest) {
+//        User user = getUserByUserName(loginRequest.getUserName());
+//        if(!(user.getPassword().equals(loginRequest.getPassword())))
+//            throw new InvalidDetailsException("Password is incorrect");
+//        else return UserLoginResponse.builder()
+//                .message("Authentication Successful")
+//                .jwtTokenResponse()
+//                .build();
+//    }
 
     @Override
     public User getUserById(Long id) {
@@ -139,20 +190,17 @@ public class UserServiceImpl implements UserService{
     @Override
     public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest) {
         User user = getUserById(updateUserRequest.getUserId());
-        if(!(user.getPassword().equals(updateUserRequest.getPassword()))){
-            throw new InvalidDetailsException("Password is incorrect");
-        }
-        else{
-            user.setUserName(updateUserRequest.getNewUserName());
-            user.setPassword(updateUserRequest.getNewPassword());
-            User savedUser = userRepository.save(user);
-            return UpdateUserResponse.builder()
-                    .id(savedUser.getId())
-                    .userName(savedUser.getUserName())
-                    .email(savedUser.getEmail())
-                    .isEnabled(savedUser.isEnabled())
-                    .build();
-        }
+        user.setUserName(updateUserRequest.getNewUserName());
+        String encodedPassword = passwordEncoder.encode(updateUserRequest.getNewPassword());
+        user.setPassword(encodedPassword);
+        User savedUser = userRepository.save(user);
+        return UpdateUserResponse.builder()
+                .id(savedUser.getId())
+                .userName(savedUser.getUserName())
+                .email(savedUser.getEmail())
+                .isEnabled(savedUser.isEnabled())
+                .jwtTokenResponse(getJwtTokenResponse(savedUser))
+                .build();
     }
 
     @Override
@@ -174,7 +222,8 @@ public class UserServiceImpl implements UserService{
     public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
         OtpEntity otpEntity = otpService.validateOtp(resetPasswordRequest.getOtp());
         User user = otpEntity.getUser();
-        user.setPassword(resetPasswordRequest.getNewPassword());
+        String encodedPassword = passwordEncoder.encode(resetPasswordRequest.getNewPassword());
+        user.setPassword(encodedPassword);
         if(!(user.getPassword().equals(resetPasswordRequest.getConfirmPassword())))
             throw new InvalidDetailsException("Password doesn't match");
         userRepository.save(user);

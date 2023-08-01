@@ -5,6 +5,7 @@ import com.diary.DiaryApp.data.dto.request.UserLoginRequest;
 import com.diary.DiaryApp.data.dto.response.OtpVerificationResponse;
 import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
 import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
+import com.diary.DiaryApp.exception.DiaryAppException;
 import com.diary.DiaryApp.services.user.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,6 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(registerUserResponse);
     }
 
-
     @PostMapping("/verify")
     public ResponseEntity<?> verifyUser(@Valid @RequestParam String otp){
         OtpVerificationResponse otpVerificationResponse = userService.verifyUser(otp);
@@ -37,9 +37,10 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequest loginRequest){
-        UserLoginResponse loginResponse = userService.login(loginRequest);
-        return ResponseEntity.ok(loginResponse);
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequest loginRequest){
+////        UserLoginResponse loginResponse = userService.login(loginRequest);
+////        return ResponseEntity.ok(loginResponse);
+//        throw new DiaryAppException("Authentication failed");
+//    }
 }

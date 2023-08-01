@@ -41,10 +41,10 @@ public class DiaryAuthorizationFilter extends OncePerRequestFilter {
             final String accessToken = authHeader.substring(bearer.length());
             if (jwtService.isValid(accessToken) &&
                     diaryTokenService.isTokenValid(accessToken)){
-                final String email = jwtService.extractUserNameFromToken(accessToken);
-                if(email != null){
+                final String username = jwtService.extractUserNameFromToken(accessToken);
+                if(username != null){
                     UserDetails userDetails =
-                            diaryUserDetailsService.loadUserByUsername(email);
+                            diaryUserDetailsService.loadUserByUsername(username);
                     final UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,

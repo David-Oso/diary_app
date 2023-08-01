@@ -36,21 +36,21 @@ public class JwtService {
                 .getSubject();
     }
 
-    public String generateAccessToken(Map<String, Object> claims, String email){
-        return generateToken(claims, email, accessExpiration);
+    public String generateAccessToken(Map<String, Object> claims, String username){
+        return generateToken(claims, username, accessExpiration);
     }
 
-    public String generateRefreshToken(String email){
-        return generateToken(new HashMap<>(), email, refreshExpiration);
+    public String generateRefreshToken(String username){
+        return generateToken(new HashMap<>(), username, refreshExpiration);
     }
 
-    private String generateToken(Map<String, Object> claims, String email, Long expiration){
+    private String generateToken(Map<String, Object> claims, String username, Long expiration){
         final Date expiredAt = Date.from(Instant.now().plusSeconds(expiration));
         return Jwts.builder()
                 .setIssuer("My_Diary")
                 .setIssuedAt(Date.from(Instant.now()))
                 .setClaims(claims)
-                .setSubject(email)
+                .setSubject(username)
                 .setExpiration(expiredAt)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();

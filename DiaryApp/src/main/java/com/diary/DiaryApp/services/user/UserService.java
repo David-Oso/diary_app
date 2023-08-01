@@ -8,7 +8,7 @@ public interface UserService {
     RegisterUserResponse registerUser(RegisterUserRequest registerUserRequest);
     String resendOtpByEmail(String email);
     OtpVerificationResponse verifyUser(String otp);
-    UserLoginResponse login(UserLoginRequest loginRequest);
+//    UserLoginResponse login(UserLoginRequest loginRequest);
     User getUserById(Long id);
     User getUserByUserName(String userName);
     User getUserByEmail(String email);

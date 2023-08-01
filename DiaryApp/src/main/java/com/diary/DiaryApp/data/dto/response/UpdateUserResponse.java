@@ -10,4 +10,5 @@ public class UpdateUserResponse {
     private String userName;
     private String email;
     private boolean isEnabled;
+    private JwtTokenResponse jwtTokenResponse;
 }

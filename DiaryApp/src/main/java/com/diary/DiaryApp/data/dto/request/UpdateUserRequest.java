@@ -12,7 +12,6 @@ import lombok.Setter;
 @Setter
 public class UpdateUserRequest {
     private Long userId;
-    private String password;
     private String newUserName;
     private String newPassword;
 }

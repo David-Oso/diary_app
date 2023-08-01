@@ -75,7 +75,7 @@ public class SecurityConfiguration {
                         diaryUserDetailsService,
                         objectMapper,
                         jwtService);
-        authenticationFilter.setFilterProcessesUrl("/api/v1/auth/login");
+        authenticationFilter.setFilterProcessesUrl("/api/v1/diary/auth/login");
         return authenticationFilter;
     }
 }
