@@ -58,7 +58,6 @@ public class DiaryAuthorizationFilter extends OncePerRequestFilter {
                             .setAuthentication(authenticationToken);
                 }
             }
-
         }
         filterChain.doFilter(request, response);
     }
