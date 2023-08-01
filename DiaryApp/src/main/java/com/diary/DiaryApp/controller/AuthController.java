@@ -24,6 +24,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(registerUserResponse);
     }
 
+
     @PostMapping("/verify")
     public ResponseEntity<?> verifyUser(@Valid @RequestParam String otp){
         OtpVerificationResponse otpVerificationResponse = userService.verifyUser(otp);
