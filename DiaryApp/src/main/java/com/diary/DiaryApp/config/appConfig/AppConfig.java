@@ -1,4 +1,4 @@
-package com.diary.DiaryApp.config;
+package com.diary.DiaryApp.config.appConfig;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
