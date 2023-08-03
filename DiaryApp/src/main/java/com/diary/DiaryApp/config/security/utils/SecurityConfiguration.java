@@ -15,6 +15,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -51,7 +52,8 @@ public class SecurityConfiguration {
                                 .permitAll()
                                 .requestMatchers(WhiteList.swagger())
                                 .permitAll()
-                                .anyRequest().authenticated())
+                                .anyRequest()
+                        .authenticated())
                 .addFilterAt(
                         login(),
                         UsernamePasswordAuthenticationFilter.class)
@@ -78,4 +80,18 @@ public class SecurityConfiguration {
         authenticationFilter.setFilterProcessesUrl("/api/v1/diary/auth/login");
         return authenticationFilter;
     }
+
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring().requestMatchers(
+//                "/js/**",
+//                "/images/**",
+//                "/v2/api-docs",
+//                "/configuration/ui",
+//                "/swagger-resources/**",
+//                "/configuration/security",
+//                "swagger-ui/**",
+//                "/swagger-ui.html",
+//                "/webjars/**");
+//    }
 }

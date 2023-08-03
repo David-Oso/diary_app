@@ -21,9 +21,6 @@ public class DiaryAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         final String requestName = authentication.getPrincipal().toString();
-//        final String name = authentication.getName();
-        log.info("\nres->{}", requestName);
-//        log.info("\nres->{}", name);
         final String requestPassword = authentication.getCredentials().toString();
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(requestName);

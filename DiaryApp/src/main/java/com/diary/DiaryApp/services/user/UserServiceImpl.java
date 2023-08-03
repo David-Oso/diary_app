@@ -224,8 +224,6 @@ public class UserServiceImpl implements UserService{
         User user = otpEntity.getUser();
         String encodedPassword = passwordEncoder.encode(resetPasswordRequest.getNewPassword());
         user.setPassword(encodedPassword);
-        if(!(user.getPassword().equals(resetPasswordRequest.getConfirmPassword())))
-            throw new InvalidDetailsException("Password doesn't match");
         userRepository.save(user);
         otpService.deleteOtp(otpEntity);
         return ResetPasswordResponse.builder()

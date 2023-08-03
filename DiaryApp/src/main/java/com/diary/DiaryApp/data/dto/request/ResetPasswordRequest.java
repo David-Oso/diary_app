@@ -25,9 +25,9 @@ public class ResetPasswordRequest {
     @Pattern(regexp = PASSWORD_REGEX, message = "Password must " +
             "contain at least one capital letter, one small letter, a number and special character(@$!%*?&)")
     private String newPassword;
-
-    @NotNull(message = "field confirm password cannot be null")
-    @NotEmpty(message = "field confirm password cannot be empty")
-    @NotBlank(message = "field confirm password cannot be blank")
-    private String confirmPassword;
+//
+//    @NotNull(message = "field confirm password cannot be null")
+//    @NotEmpty(message = "field confirm password cannot be empty")
+//    @NotBlank(message = "field confirm password cannot be blank")
+//    private String confirmPassword;
 }
