@@ -43,8 +43,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)throws Exception{
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-//                .cors(Customizer.withDefaults())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(Customizer.withDefaults())
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
                                 .authenticationEntryPoint(authenticationEntryPoint))
@@ -90,13 +91,14 @@ public class SecurityConfiguration {
     private CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
-        configuration.setAllowedHeaders(List.of("*"));
-//        configuration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8081"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "TRACE"));
+//        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
 //    @Bean
 //    public WebSecurityCustomizer webSecurityCustomizer() {

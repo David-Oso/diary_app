@@ -6,6 +6,7 @@ import com.diary.DiaryApp.data.dto.response.CreateEntryResponse;
 import com.diary.DiaryApp.data.dto.response.UpdateEntryResponse;
 import com.diary.DiaryApp.data.model.Entry;
 import com.diary.DiaryApp.services.entry.EntryService;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/diary/entry/")
 @AllArgsConstructor
+//@Hidden
 public class EntryController {
     private final EntryService entryService;
 

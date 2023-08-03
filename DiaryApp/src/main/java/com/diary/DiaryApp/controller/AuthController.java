@@ -7,7 +7,11 @@ import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
 import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
 import com.diary.DiaryApp.exception.DiaryAppException;
 import com.diary.DiaryApp.services.user.UserService;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,9 +22,25 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/diary/auth")
 @AllArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Auth")
+//@SecurityRequirement(name = "bearerAuth")
 public class AuthController {
     private final UserService userService;
+
+    @Operation(
+            description = "Get endpoint for user registration",
+            summary = "This is summary for user registration endpoint",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Invalid registration details",
+                            responseCode = "403"
+                    )
+            }
+    )
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserRequest registerUserRequest){
         RegisterUserResponse registerUserResponse = userService.registerUser(registerUserRequest);
@@ -34,6 +54,7 @@ public class AuthController {
     }
 
     @PostMapping("/resend_otp")
+//    @Hidden
     public ResponseEntity<?> resendOtp(@Valid @RequestParam String email){
         String response = userService.resendOtpByEmail(email);
         return ResponseEntity.ok(response);
