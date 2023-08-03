@@ -7,6 +7,7 @@ import com.diary.DiaryApp.data.dto.response.RegisterUserResponse;
 import com.diary.DiaryApp.data.dto.response.UserLoginResponse;
 import com.diary.DiaryApp.exception.DiaryAppException;
 import com.diary.DiaryApp.services.user.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/diary/auth")
 @AllArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class AuthController {
     private final UserService userService;
     @PostMapping("/register")
