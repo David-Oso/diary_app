@@ -46,7 +46,6 @@ public class UserServiceImpl implements UserService{
     private final DiaryTokenService diaryTokenService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-//    private final DiaryUserDetailsService userDetailsService;
 
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest registerRequest) {

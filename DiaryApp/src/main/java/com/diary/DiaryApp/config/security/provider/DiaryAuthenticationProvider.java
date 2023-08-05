@@ -26,6 +26,7 @@ public class DiaryAuthenticationProvider implements AuthenticationProvider {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(requestName);
         final String username = userDetails.getUsername();
         final String password = userDetails.getPassword();
+
         if (passwordEncoder.matches(requestPassword, password)){
             return new UsernamePasswordAuthenticationToken(
                     username,
