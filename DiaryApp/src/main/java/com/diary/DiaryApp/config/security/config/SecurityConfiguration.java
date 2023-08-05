@@ -1,6 +1,5 @@
 package com.diary.DiaryApp.config.security.config;
 
-import com.diary.DiaryApp.config.security.filter.DiaryAuthenticationFilter;
 import com.diary.DiaryApp.config.security.filter.DiaryAuthorizationFilter;
 import com.diary.DiaryApp.config.security.jwtToken.service.DiaryTokenService;
 import com.diary.DiaryApp.config.security.services.DiaryUserDetailsService;
@@ -20,6 +19,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -33,11 +33,12 @@ import java.util.List;
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
     private final AuthenticationEntryPoint authenticationEntryPoint;
-    private final AuthenticationManager authenticationManager;
-    private final DiaryUserDetailsService diaryUserDetailsService;
-    private final DiaryTokenService diaryTokenService;
-    private ObjectMapper objectMapper;
-    private final JwtService jwtService;
+    private final DiaryAuthorizationFilter diaryAuthorizationFilter;
+//    private final AuthenticationManager authenticationManager;
+//    private final DiaryUserDetailsService diaryUserDetailsService;
+//    private final DiaryTokenService diaryTokenService;
+//    private ObjectMapper objectMapper;
+//    private final JwtService jwtService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)throws Exception{
@@ -61,32 +62,33 @@ public class SecurityConfiguration {
                                 .permitAll()
                                 .anyRequest()
                         .authenticated())
-                .addFilterAt(
-                        login(),
-                        UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(
-                        new DiaryAuthorizationFilter(
-                                diaryUserDetailsService,
-                                diaryTokenService,
-                                jwtService
-                        ),
-                        DiaryAuthenticationFilter.class
-                )
+                .addFilterBefore(diaryAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterAt()
+//                        login(),
+//                        UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(
+//                        new DiaryAuthorizationFilter(
+//                                diaryUserDetailsService,
+//                                diaryTokenService,
+//                                jwtService
+//                        ),
+//                        DiaryAuthenticationFilter.class
+//                )
                 .build();
 
     }
 
-    private UsernamePasswordAuthenticationFilter login() {
-        final UsernamePasswordAuthenticationFilter authenticationFilter =
-                new DiaryAuthenticationFilter(
-                        authenticationManager,
-                        diaryTokenService,
-                        diaryUserDetailsService,
-                        objectMapper,
-                        jwtService);
-        authenticationFilter.setFilterProcessesUrl("/api/v1/diary/auth/login");
-        return authenticationFilter;
-    }
+//    private UsernamePasswordAuthenticationFilter login() {
+//        final UsernamePasswordAuthenticationFilter authenticationFilter =
+//                new DiaryAuthenticationFilter(
+//                        authenticationManager,
+//                        diaryTokenService,
+//                        diaryUserDetailsService,
+//                        objectMapper,
+//                        jwtService);
+//        authenticationFilter.setFilterProcessesUrl("/api/v1/diary/auth/login");
+//        return authenticationFilter;
+//    }
 
     private CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

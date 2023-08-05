@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService{
     private final DiaryTokenService diaryTokenService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final DiaryUserDetailsService userDetailsService;
+//    private final DiaryUserDetailsService userDetailsService;
 
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest registerRequest) {
@@ -88,8 +88,8 @@ public class UserServiceImpl implements UserService{
         if(user.isEnabled()) throw new DiaryAppException("User is already enabled");
         else{
             String otp = otpService.generateAndSaveOtp(user);
-            log.info("\n:::::::::: RESENT OTP -> %s\n".formatted(otp));
-//            sendDiaryAppActivationMail(user, otp);
+//            log.info("\n:::::::::: RESENT OTP -> %s\n".formatted(otp));
+            sendDiaryAppActivationMail(user, otp);
             return "Another otp has been send to your email. Please check to proceed";
         }
     }
@@ -158,46 +158,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserLoginResponse login(UserLoginRequest loginRequest) {
-//        User user = getUserByUserName(loginRequest.getUserName());
-//        if(!(user.getPassword().equals(loginRequest.getPassword())))
-//            throw new InvalidDetailsException("Password is incorrect");
-//        else return UserLoginResponse.builder()
-//                .message("Authentication Successful")
-//                .jwtTokenResponse()
-//                .build();
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword()));
 
-        Map<String, Object> claims = authentication.getAuthorities().stream()
-                .collect(Collectors.toMap(authority -> "claim", Function.identity()));
-        AuthenticatedUser user = (AuthenticatedUser) authentication.getPrincipal();
-        String username = user.getUsername();
-
-        JwtTokenResponse jwtResponse = this.generateTokens(claims, username);
+        String username =  authentication.getPrincipal().toString();
+        User foundUser = getUserByUserName(username);
+        JwtTokenResponse jwtResponse = this.getJwtTokenResponse(foundUser);
         return UserLoginResponse.builder()
-//                .message()
                 .jwtTokenResponse(jwtResponse)
-                .build();
-    }
-
-    private JwtTokenResponse generateTokens(Map<String, Object> claims, String username) {
-        final String accessToken = jwtService.generateAccessToken(claims, username);
-        final String refreshToken = jwtService.generateRefreshToken(username);
-        final AuthenticatedUser authenticatedUser =
-                (AuthenticatedUser) userDetailsService.loadUserByUsername(username);
-
-        final DiaryToken diaryToken = DiaryToken.builder()
-                .user(authenticatedUser.getUser())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .isExpired(false)
-                .isExpired(false)
-                .build();
-        diaryTokenService.saveToken(diaryToken);
-        return JwtTokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -272,32 +240,6 @@ public class UserServiceImpl implements UserService{
                 .isSuccess(true)
                 .build();
     }
-
-//    @Override
-//    public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest) {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        User user = this.getUserById(updateUserRequest.getUserId());
-//        if(user.getPassword().equals(updateUserRequest.getPassword()))
-//            throw new InvalidDetailsException("Password is incorrect");
-//        else {
-//            JsonNode node = objectMapper.convertValue(user, JsonNode.class);
-//            JsonPatch updatePayload = updateUserRequest.getUpdatePayLoad();
-//            try{
-//                JsonNode updateNode = updatePayload.apply(node);
-//                var updatedUser = objectMapper.convertValue(updateNode, User.class);
-//                updatedUser = userRepository.save(updatedUser);
-//                return UpdateUserResponse.builder()
-//                        .id(updatedUser.getId())
-//                        .userName(updatedUser.getUserName())
-//                        .email(updatedUser.getEmail())
-//                        .isEnabled(updatedUser.isEnabled())
-//                        .build();
-//            }catch (JsonPatchException exception){
-//                log.error(exception.getMessage());
-//                throw new RuntimeException();
-//            }
-//        }
-//    }
 
     @Override
     public String deleteUserById(Long userId) {
