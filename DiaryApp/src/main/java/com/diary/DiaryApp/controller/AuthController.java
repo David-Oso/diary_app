@@ -62,8 +62,8 @@ public class AuthController {
 
 //    @PostMapping("/login")
 //    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequest loginRequest){
-////        UserLoginResponse loginResponse = userService.login(loginRequest);
-////        return ResponseEntity.ok(loginResponse);
+//        UserLoginResponse loginResponse = userService.login(loginRequest);
+//        return ResponseEntity.ok(loginResponse);
 //        throw new DiaryAppException("Authentication failed");
 //    }
 }

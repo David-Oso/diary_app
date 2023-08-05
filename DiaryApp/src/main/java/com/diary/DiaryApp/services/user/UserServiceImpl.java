@@ -2,7 +2,9 @@ package com.diary.DiaryApp.services.user;
 
 import com.diary.DiaryApp.config.security.jwtToken.model.DiaryToken;
 import com.diary.DiaryApp.config.security.jwtToken.service.DiaryTokenService;
+import com.diary.DiaryApp.config.security.services.DiaryUserDetailsService;
 import com.diary.DiaryApp.config.security.services.JwtService;
+import com.diary.DiaryApp.config.security.user.AuthenticatedUser;
 import com.diary.DiaryApp.data.dto.request.*;
 import com.diary.DiaryApp.data.dto.response.*;
 import com.diary.DiaryApp.data.model.Diary;
@@ -18,6 +20,9 @@ import com.diary.DiaryApp.utilities.DiaryAppUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,6 +45,8 @@ public class UserServiceImpl implements UserService{
     private final JwtService jwtService;
     private final DiaryTokenService diaryTokenService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final DiaryUserDetailsService userDetailsService;
 
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest registerRequest) {
@@ -149,8 +156,8 @@ public class UserServiceImpl implements UserService{
                 );
     }
 
-//    @Override
-//    public UserLoginResponse login(UserLoginRequest loginRequest) {
+    @Override
+    public UserLoginResponse login(UserLoginRequest loginRequest) {
 //        User user = getUserByUserName(loginRequest.getUserName());
 //        if(!(user.getPassword().equals(loginRequest.getPassword())))
 //            throw new InvalidDetailsException("Password is incorrect");
@@ -158,7 +165,41 @@ public class UserServiceImpl implements UserService{
 //                .message("Authentication Successful")
 //                .jwtTokenResponse()
 //                .build();
-//    }
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword()));
+
+        Map<String, Object> claims = authentication.getAuthorities().stream()
+                .collect(Collectors.toMap(authority -> "claim", Function.identity()));
+        AuthenticatedUser user = (AuthenticatedUser) authentication.getPrincipal();
+        String username = user.getUsername();
+
+        JwtTokenResponse jwtResponse = this.generateTokens(claims, username);
+        return UserLoginResponse.builder()
+//                .message()
+                .jwtTokenResponse(jwtResponse)
+                .build();
+    }
+
+    private JwtTokenResponse generateTokens(Map<String, Object> claims, String username) {
+        final String accessToken = jwtService.generateAccessToken(claims, username);
+        final String refreshToken = jwtService.generateRefreshToken(username);
+        final AuthenticatedUser authenticatedUser =
+                (AuthenticatedUser) userDetailsService.loadUserByUsername(username);
+
+        final DiaryToken diaryToken = DiaryToken.builder()
+                .user(authenticatedUser.getUser())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .isExpired(false)
+                .isExpired(false)
+                .build();
+        diaryTokenService.saveToken(diaryToken);
+        return JwtTokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
 
     @Override
     public User getUserById(Long id) {
