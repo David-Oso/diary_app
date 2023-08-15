@@ -47,7 +47,7 @@ public class DiaryAuthorizationFilter extends OncePerRequestFilter {
                             diaryUserDetailsService.loadUserByUsername(username);
                     final UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(
-                                    userDetails,
+                                     userDetails,
                                     null,
                                     userDetails.getAuthorities());
                     authenticationToken.setDetails(
