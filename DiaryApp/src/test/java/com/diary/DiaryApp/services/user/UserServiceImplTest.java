@@ -33,7 +33,6 @@ class UserServiceImplTest {
     private UploadImageRequest uploadImageRequest;
     private UpdateUserRequest updateUserRequest;
     private ResetPasswordRequest resetPasswordRequest;
-    private String managementRequest;
 
     @BeforeEach
     void setUp() {
