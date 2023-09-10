@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class UserServiceImplTest {
     @Autowired UserService userService;
     private RegisterUserRequest registerUserRequest1;
-    private RegisterUserRequest registerUserRequest2;f
+    private RegisterUserRequest registerUserRequest2;
     private UserLoginRequest userLoginRequest;
     private UploadImageRequest uploadImageRequest;
     private UpdateUserRequest updateUserRequest;
