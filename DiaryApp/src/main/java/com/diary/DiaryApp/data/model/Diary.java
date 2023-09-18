@@ -20,5 +20,4 @@ public class Diary {
     private Long id;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Entry> entries = new HashSet<>();
-    private String fed;
 }
