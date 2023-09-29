@@ -31,4 +31,5 @@ public class RegisterUserRequest {
     @Pattern(regexp = PASSWORD_REGEX, message = "Password must " +
             "contain at least one capital letter, one small letter, a number and special character(@$!%*?&)")
     private String password;
+
 }
