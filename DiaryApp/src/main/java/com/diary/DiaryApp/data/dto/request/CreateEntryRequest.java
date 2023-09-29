@@ -15,6 +15,7 @@ import lombok.Setter;
 public class CreateEntryRequest {
     @NotNull(message = "field user id cannot be null")
     private Long userId;
+
     @NotNull(message = "field title cannot be null")
     @NotBlank(message = "field title cannot be blank")
     @NotEmpty(message = "field title cannot be empty")
@@ -24,4 +25,5 @@ public class CreateEntryRequest {
     @NotBlank(message = "field body cannot be blank")
     @NotEmpty(message = "field body cannot be empty")
     private String body;
+
 }
