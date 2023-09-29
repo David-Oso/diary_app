@@ -25,5 +25,4 @@ public class CreateEntryRequest {
     @NotBlank(message = "field body cannot be blank")
     @NotEmpty(message = "field body cannot be empty")
     private String body;
-
 }
