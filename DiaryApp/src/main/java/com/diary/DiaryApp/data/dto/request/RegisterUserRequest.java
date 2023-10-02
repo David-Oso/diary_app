@@ -29,6 +29,7 @@ public class RegisterUserRequest {
     @NotBlank(message = "field password cannot be blank")
 
     @NotEmpty(message = "field password cannot be empty")
+
     @Pattern(regexp = PASSWORD_REGEX, message = "Password must " +
             "contain at least one capital letter, one small letter, a number and special character(@$!%*?&)")
     private String password;
