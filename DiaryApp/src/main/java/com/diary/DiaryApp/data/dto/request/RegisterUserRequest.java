@@ -21,7 +21,6 @@ public class RegisterUserRequest {
 
     @NotNull(message = "field email cannot be null")
     @NotBlank(message = "field email cannot be blank")
-
     @NotEmpty(message = "field email cannot be empty")
     @Email(regexp = EMAIL_REGEX, message = "enter a valid email address")
     private String email;
