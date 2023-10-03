@@ -23,6 +23,7 @@ public class Entry {
     private String title;
     private String description;
     private String body;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
