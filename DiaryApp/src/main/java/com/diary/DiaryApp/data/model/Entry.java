@@ -22,6 +22,7 @@ public class Entry {
     private Long id;
     private String title;
     private String description;
+
     private String body;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
