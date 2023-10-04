@@ -21,7 +21,7 @@ public class Entry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private String description1;
+    private String description;
     private String body;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
