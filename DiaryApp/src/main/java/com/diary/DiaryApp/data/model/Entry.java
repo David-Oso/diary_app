@@ -25,4 +25,5 @@ public class Entry {
     private String body;
     private LocalDateTime createdAt ;
     private LocalDateTime updatedAt;
+
 }
