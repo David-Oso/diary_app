@@ -20,8 +20,8 @@ public class Entry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title1;
-    private String description;
+    private String title;
+    private String description1;
     private String body;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
