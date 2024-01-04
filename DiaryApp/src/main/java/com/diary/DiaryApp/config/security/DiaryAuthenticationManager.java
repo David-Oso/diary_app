@@ -1,4 +1,4 @@
-package com.diary.DiaryApp.config.security.manager;
+package com.diary.DiaryApp.config.security;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class DiaryAuthenticationManager implements AuthenticationManager {
     private final AuthenticationProvider authenticationProvider;
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         return authenticationProvider.authenticate(authentication);

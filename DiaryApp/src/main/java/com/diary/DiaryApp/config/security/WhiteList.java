@@ -1,4 +1,4 @@
-package com.diary.DiaryApp.config.security.utils;
+package com.diary.DiaryApp.config.security;
 
 import lombok.Getter;
 
@@ -8,7 +8,8 @@ public class WhiteList {
         return new String[]{
                 "/api/v1/diary/auth/register",
                 "/api/v1/diary/auth/verify",
-                "/api/v1/diary/auth/login"
+                "/api/v1/diary/auth/resend-otp",
+                "/api/v1/diary/auth/login",
         };
     }
 

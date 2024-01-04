@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/diary/auth")
 @AllArgsConstructor
 @Tag(name = "Auth")
-//@SecurityRequirement(name = "bearerAuth")
 public class AuthController {
     private final UserService userService;
 
@@ -53,7 +52,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(otpVerificationResponse);
     }
 
-    @PostMapping("/resend_otp")
+    @PostMapping("/resend-otp")
 //    @Hidden
     public ResponseEntity<?> resendOtp(@Valid @RequestParam String email){
         String response = userService.resendOtpByEmail(email);

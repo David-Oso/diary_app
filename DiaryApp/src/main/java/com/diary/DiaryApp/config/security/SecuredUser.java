@@ -1,25 +1,20 @@
-package com.diary.DiaryApp.config.security.user;
+package com.diary.DiaryApp.config.security;
 
 import com.diary.DiaryApp.data.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Getter
-public class AuthenticatedUser implements UserDetails {
+public class SecuredUser implements UserDetails {
     private final User user;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .collect(Collectors.toSet());
-
+        return user.getRole().getAuthorities();
     }
 
     @Override
@@ -29,7 +24,7 @@ public class AuthenticatedUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUserName();
+        return user.getEmail();
     }
 
     @Override

@@ -36,7 +36,7 @@ public class UserController {
         User user = userService.getUserByEmail(email);
         return ResponseEntity.ok(user);
     }
-    @PostMapping(value = "upload_profile_image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "upload-profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadProfileImage(@Valid @ModelAttribute UploadImageRequest uploadImageRequest){
         String response = userService.uploadProfileImage(uploadImageRequest);
         return ResponseEntity.ok(response);
@@ -48,13 +48,13 @@ public class UserController {
         return ResponseEntity.ok(updateUserResponse);
     }
 
-    @GetMapping("send_reset_password_mail/{id}")
+    @GetMapping("send-reset-password-mail/{id}")
     public ResponseEntity<?> sendResetPasswordMail(@Valid @PathVariable Long id){
         String response = userService.sendResetPasswordMail(id);
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("reset_password")
+    @PutMapping("reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest){
         ResetPasswordResponse resetPasswordResponse = userService.resetPassword(resetPasswordRequest);
         return ResponseEntity.ok(resetPasswordResponse);

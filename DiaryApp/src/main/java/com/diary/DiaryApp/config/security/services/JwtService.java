@@ -1,10 +1,10 @@
 package com.diary.DiaryApp.config.security.services;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,60 +13,69 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 public class JwtService {
-    @Value("${access.token.expiration}")
+    @Value("${jwt.secret.key}")
+    private String jwtSecretKey;
+    @Value("${access.expiration}")
     private long accessExpiration;
-    @Value("${refresh.token.expiration}")
+    @Value("${refresh.expiration}")
     private long refreshExpiration;
-    private final Key key;
 
-    @Autowired
-    public JwtService(Key key){
-        this.key = key;
+    public String extractUsername(String jwtToken){
+        return extractClaim(jwtToken, Claims::getSubject);
     }
 
-    public String extractUserNameFromToken(String token){
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
+    private <T> T extractClaim(String jwtToken, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(jwtToken);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
     }
 
-    public String generateAccessToken(Map<String, Object> claims, String username){
-        return generateToken(claims, username, accessExpiration);
+    public String generateAccessToken(HashMap<String, Object> claims, String email){
+        return buildJwtToken(claims, email, accessExpiration);
     }
 
-    public String generateRefreshToken(String username){
-        return generateToken(new HashMap<>(), username, refreshExpiration);
+    public String generateRefreshToken(HashMap<String, Object> claims, String email){
+        return buildJwtToken(claims, email, refreshExpiration);
     }
-
-    private String generateToken(Map<String, Object> claims, String username, Long expiration){
-        final Date expiredAt = Date.from(Instant.now().plusSeconds(expiration));
+    private String buildJwtToken(Map<String, Object> claims, String email, long tokenExpiration){
+        final Date expiredAt = Date.from(Instant.now().plusSeconds(tokenExpiration));
         return Jwts.builder()
-                .setIssuer("My_Diary")
+                .setIssuer("MyBankApp")
                 .setIssuedAt(Date.from(Instant.now()))
                 .setClaims(claims)
-                .setSubject(username)
+                .setSubject(email)
                 .setExpiration(expiredAt)
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(getSignInKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    public Boolean isValid(String token){
-        try{
-            final Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            final Date expiration = claims.getExpiration();
-            return expiration != null && expiration.after(Date.from(Instant.now()));
-        }catch (JwtException exception){
-            return false;
-        }
+    public boolean isValidToken(String token, String email){
+        final String userEmail = extractUsername(token);
+        return (userEmail.equals(email)) && !isTokenExpired(token);
+    }
+
+    private boolean isTokenExpired(String token){
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token){
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

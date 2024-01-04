@@ -1,12 +1,12 @@
 package com.diary.DiaryApp.services.user;
 
-import com.diary.DiaryApp.config.security.jwtToken.model.DiaryToken;
-import com.diary.DiaryApp.config.security.jwtToken.service.DiaryTokenService;
+import com.diary.DiaryApp.config.security.SecuredUser;
+import com.diary.DiaryApp.config.security.jwtToken.DiaryJwtToken;
+import com.diary.DiaryApp.config.security.jwtToken.DiaryJwtTokenRepository;
 import com.diary.DiaryApp.config.security.services.JwtService;
 import com.diary.DiaryApp.data.dto.request.*;
 import com.diary.DiaryApp.data.dto.response.*;
 import com.diary.DiaryApp.data.model.Diary;
-import com.diary.DiaryApp.data.model.Role;
 import com.diary.DiaryApp.data.model.User;
 import com.diary.DiaryApp.data.repository.UserRepository;
 import com.diary.DiaryApp.exception.*;
@@ -26,8 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService{
     private final CloudinaryService cloudinaryService;
     private final MailService mailService;
     private final JwtService jwtService;
-    private final DiaryTokenService diaryTokenService;
+    private final DiaryJwtTokenRepository jwtTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
@@ -113,12 +113,10 @@ public class UserServiceImpl implements UserService{
     }
 
     private JwtTokenResponse getJwtTokenResponse(User user) {
-        final String username = user.getUserName();
-        final String accessToken = jwtService.generateAccessToken(
-                getUserAuthority(user),
-                username
-        );
-        final String refreshToken = jwtService.generateRefreshToken(username);
+        final String email = user.getEmail();
+        HashMap<String, Object> claims = getClaims(user);
+        final String accessToken = jwtService.generateAccessToken(claims, email);
+        final String refreshToken = jwtService.generateRefreshToken(claims, email);
 
         saveDiaryToken(user, accessToken, refreshToken);
         return JwtTokenResponse.builder()
@@ -127,27 +125,26 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
-    private void saveDiaryToken(User user, String accessToken, String refreshToken) {
-        final DiaryToken diaryToken =
-                DiaryToken.builder()
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
-                        .user(user)
-                        .isExpired(false)
-                        .isRevoked(false)
-                        .build();
-        diaryTokenService.saveToken(diaryToken);
+    private static HashMap<String, Object> getClaims(User appUser) {
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("role", appUser.getRole());
+        claims.put("list of permissions", appUser.getRole()
+                .getPermissions()
+                .stream()
+                .toList());
+        SecuredUser securedUser = new SecuredUser(appUser);
+        securedUser.getAuthorities().forEach(claim -> claims.put("claims", claim));
+        return claims;
     }
 
-    private static Map<String, Object> getUserAuthority(User user) {
-        return user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .collect(
-                        Collectors.toMap(
-                                authority -> "claim",
-                                Function.identity()
-                        )
-                );
+    private void saveDiaryToken(User user, String accessToken, String refreshToken) {
+        final DiaryJwtToken diaryToken = new DiaryJwtToken();
+        diaryToken.setAccessToken(accessToken);
+        diaryToken.setRefreshToken(refreshToken);
+        diaryToken.setUser(user);
+        diaryToken.setRevoked(false);
+        diaryToken.setExpired(false);
+        jwtTokenRepository.save(diaryToken);
     }
 
     @Override

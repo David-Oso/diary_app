@@ -63,7 +63,7 @@ public class EntryController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("number_of_entries/{id}")
+    @GetMapping("number-of-entries/{id}")
     public ResponseEntity<?> getNumberOfEntriesByUserId(@Valid @PathVariable Long id){
         return ResponseEntity.ok(entryService.getNumberOfEntriesByUserId(id));
     }
