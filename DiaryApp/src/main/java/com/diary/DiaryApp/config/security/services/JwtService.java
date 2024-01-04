@@ -17,11 +17,11 @@ import java.util.function.Function;
 
 @Component
 public class JwtService {
-    @Value("${jwt.secret.key}")
+    @Value("${jwt.secret}")
     private String jwtSecretKey;
-    @Value("${access.expiration}")
+    @Value("${access.token.expiration}")
     private long accessExpiration;
-    @Value("${refresh.expiration}")
+    @Value("${refresh.token.expiration}")
     private long refreshExpiration;
 
     public String extractUsername(String jwtToken){

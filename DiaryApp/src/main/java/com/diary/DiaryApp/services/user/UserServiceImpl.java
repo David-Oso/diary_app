@@ -150,10 +150,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserLoginResponse login(UserLoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         String username =  authentication.getPrincipal().toString();
-        User foundUser = getUserByUserName(username);
+        User foundUser = getUserByEmail(username);
         JwtTokenResponse jwtResponse = this.getJwtTokenResponse(foundUser);
         return UserLoginResponse.builder()
                 .jwtTokenResponse(jwtResponse)

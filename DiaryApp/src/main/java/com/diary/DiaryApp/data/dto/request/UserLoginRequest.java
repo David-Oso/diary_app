@@ -13,10 +13,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserLoginRequest {
-    @NotNull(message = "field user name cannot be null")
-    @NotEmpty(message = "field user name cannot be empty")
-    @NotBlank(message = "field user name cannot be blank")
-    private String userName;
+    @NotNull(message = "field email cannot be null")
+    @NotEmpty(message = "field email cannot be empty")
+    @NotBlank(message = "field email cannot be blank")
+    private String email;
 
     @NotNull(message = "field password cannot be null")
     @NotEmpty(message = "field password cannot be empty")
