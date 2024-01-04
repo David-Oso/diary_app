@@ -37,7 +37,7 @@ public class DiaryTokenServiceImpl implements DiaryTokenService {
     @Override
     public boolean isTokenValid(String anyToken) {
         return getValidTokenByAnyToken(anyToken)
-                .map(diaryToken -> !diaryToken.isRevoked())
+                .map(diaryToken -> !diaryToken.isRevoked() || !diaryToken.isExpired())
                 .orElse(false);
     }
 

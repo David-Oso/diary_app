@@ -15,26 +15,12 @@ import java.security.Key;
 
 @Configuration
 public class AppConfig {
-    @Value("${jwt.secret}")
-    private String jwtSecretKey;
     @Value("${cloudinary.cloud.name}")
     private String cloudName;
     @Value("${cloudinary.api.key}")
     private String apiKey;
     @Value("${cloudinary.api.secret}")
     private String apiSecret;
-
-    @Bean
-    public Key getSecretKey(){
-        return new SecretKeySpec(
-                jwtSecretKey.getBytes(),
-                SignatureAlgorithm.HS512.getJcaName());
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public ModelMapper modelMapper(){

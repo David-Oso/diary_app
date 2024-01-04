@@ -2,9 +2,7 @@ package com.diary.DiaryApp.services.user;
 
 import com.diary.DiaryApp.config.security.jwtToken.model.DiaryToken;
 import com.diary.DiaryApp.config.security.jwtToken.service.DiaryTokenService;
-import com.diary.DiaryApp.config.security.services.DiaryUserDetailsService;
 import com.diary.DiaryApp.config.security.services.JwtService;
-import com.diary.DiaryApp.config.security.user.AuthenticatedUser;
 import com.diary.DiaryApp.data.dto.request.*;
 import com.diary.DiaryApp.data.dto.response.*;
 import com.diary.DiaryApp.data.model.Diary;
@@ -54,11 +52,9 @@ public class UserServiceImpl implements UserService{
         newUser.setCreatedAt(LocalDateTime.now().toString());
         String encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
         newUser.setPassword(encodedPassword);
-        newUser.setRoles(Set.of(Role.USER));
         User savedUser = userRepository.save(newUser);
         String otp = otpService.generateAndSaveOtp(newUser);
         sendDiaryAppActivationMail(savedUser, otp);
-//        log.info("\n\n:::::::::::::::::::: GENERATED OTP -> %s ::::::::::::::::::::\n".formatted(otp));
         return RegisterUserResponse.builder()
                 .message("Check your mail for otp to activate your diary")
                 .isEnabled(false)
@@ -87,7 +83,6 @@ public class UserServiceImpl implements UserService{
         if(user.isEnabled()) throw new DiaryAppException("User is already enabled");
         else{
             String otp = otpService.generateAndSaveOtp(user);
-//            log.info("\n:::::::::: RESENT OTP -> %s\n".formatted(otp));
             sendDiaryAppActivationMail(user, otp);
             return "Another otp has been send to your email. Please check to proceed";
         }
@@ -222,7 +217,6 @@ public class UserServiceImpl implements UserService{
         String subject = "Reset Your Password";
         String htmlContent = String.format(mailTemplate, name, otp, phoneNumber);
         mailService.sendMail(email, subject, htmlContent);
-//        log.info("\n:::::::::: RESET PASSWORD OTP -> %s\n".formatted(otp));
         return "Check your email to reset your password";
     }
 

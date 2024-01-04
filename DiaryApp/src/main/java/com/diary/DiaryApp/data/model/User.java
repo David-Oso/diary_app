@@ -24,8 +24,7 @@ public class User {
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
-//    private final Role role = Role.USER;
-    private Set<Role> roles;
+    private final Role role = Role.USER;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Diary diary;
     private boolean isEnabled = false;

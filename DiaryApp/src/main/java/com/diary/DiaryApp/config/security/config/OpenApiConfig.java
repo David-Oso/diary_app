@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                         url = ""
                 ),
                 description = "OpenApi documentation for diary app",
-                title = "OpenApi specification - David",
+                title = "OpenApi Specification - David",
                 version = "1.0",
                 license =  @License(
                         name = "License name",
